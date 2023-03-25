@@ -1,0 +1,150 @@
+nav{
+  width: 100%;
+  background-color: rgba(211, 211, 211, 0.703);
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+}
+nav h1{
+  margin: 0;
+}
+ input[type="text"], 
+ input[type="number"] {
+  width: 60%;
+  display: block;
+  padding: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  margin: 1rem auto;
+}
+label{
+  display: block;
+}
+select{
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+button {
+  padding: 0.5rem;
+  min-width: 10rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: gray;
+  color: white;
+  font-weight: bold;
+  margin-block: 0.5rem;
+}
+.logo{
+  width: 48px;
+  margin-inline-end: 1rem;
+}
+.links {
+  margin-left: auto;
+}
+.navLink{
+  padding-inline:0.5rem
+}
+.container {
+  max-width: 80rem;
+  margin-inline: auto;
+  padding: 0.5rem 1rem;
+  text-align: center;
+}
+
+.flex{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  row-gap: 2rem;
+  column-gap: 2rem;
+}
+
+
+.location {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.muted{
+  font-size: 0.8rem;
+  color: rgb(95, 95, 95);
+}
+
+.bg-container {
+  position: relative;
+  width: 14rem;
+  min-height: 19rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.515);
+  border: 1px solid rgb(150, 150, 150);
+  border-radius: 0.5rem;
+  box-shadow: 2px 2px 20px #9f9f9f;
+}
+
+.bg-container h3,
+.bg-container h4 {
+  font-size: 1rem;
+  margin-block: 0.5rem;
+}
+
+.img-container {
+  position: relative;
+  height: 11rem;
+}
+.bg-image{
+  max-width: 100%;
+  height: 100%;
+}
+
+.status {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  border: 0.1rem solid white;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+}
+
+.model{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  
+}
+
+.mx1 {
+  margin-block: 0.5rem;
+}
+
+.dot{
+  display: inline-block;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  margin-inline-start: 0.5rem;
+  margin-inline-end: 0.25rem;
+}
+
+.green {
+  background: linear-gradient(200deg, lightgreen, green, lightgreen);
+}
+
+.red {
+  background: linear-gradient(200deg,rgb(242, 127, 146) 10%, red 90%, rgb(242, 127, 146));
+  
+}
+
+.yellow {
+  background: linear-gradient(200deg,rgba(255, 200, 0) 10%, orange 90%,yellow);
+
+}

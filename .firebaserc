@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "bgdb-2dd2f"
+  },
+  "targets": {
+    "bgdb-2dd2f": {
+      "hosting": {
+        "boardgames": [
+          "boardgames-sale"
+        ]
+      }
+    }
+  }
+}
