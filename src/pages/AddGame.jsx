@@ -36,6 +36,13 @@ export default function AddGame() {
       });
   };
   
+  const uploadBoardgames = () => {
+    boardgameList.forEach(game => {
+      addDoc(collection(db, "sale-list"), game)
+        .then(() => toast.success(game.name + added))
+      .catch(err=>toast.error(err.message))
+    })
+  }
   
 
   return (
@@ -52,7 +59,8 @@ export default function AddGame() {
           is Expansion?
         </label>
 
-        <button>submit</button>
+          <button>submit</button>
+          {/* <button onClick={uploadBoardgames}>Upload games</button> */}
         </form>
         :
         <h1>Unauthorized</h1>

@@ -1,12 +1,12 @@
-import { collection, deleteDoc, doc, getDocs, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
-import { useContext, useEffect, useState } from "react";
+import {  deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { UserContext } from "../lib/context";
 import { db } from "../lib/firebase";
-import { boardgameList } from "../utils/boardgames";
+
 import {MdDeleteForever} from "react-icons/md"
 
-export default function Boardgames({ game }) {
+export default function Boardgame({ game }) {
   const { user } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
   const compare = (a, b) => {

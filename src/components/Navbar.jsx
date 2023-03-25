@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../lib/firebase";
-import { MdLogin, MdHome, MdLogout, MdAddTask } from "react-icons/md";
+import { MdLogin, MdLogout, MdAddTask } from "react-icons/md";
 
 import { UserContext } from "../lib/context";
 

@@ -9,7 +9,7 @@ export default function Login() {
   const loginWithProvider = async (provider) => {
     try {
       const { user } = await signInWithPopup(auth, provider);
-      toast.success("Welcome " + user.email);
+      toast.success("Welcome " + user.displayName);
       navigate("/add");
     } catch (error) {
       // Handle Errors here.

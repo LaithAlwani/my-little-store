@@ -37,8 +37,8 @@ button {
 }
 
 .deleteBtn{
-  background-color: transparent;
-  color: red;
+  background-color: red;
+  color: white;
   font-size: 1.5rem;
   cursor: pointer;
   min-width: 0;
@@ -84,8 +84,8 @@ button {
 .bg-container {
   position: relative;
   width: 14rem;
-  min-height: 19rem;
-  padding: 1rem;
+  min-height: 20rem;
+  padding: 1rem 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

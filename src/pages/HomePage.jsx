@@ -1,6 +1,6 @@
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import Boardgames from "../components/Boardgames";
+import Boardgame from "../components/Boardgame";
 import { db } from "../lib/firebase";
 
 export default function HomePage() {
@@ -8,7 +8,7 @@ export default function HomePage() {
 
   useEffect(() => {
     let unSubscribe;
-    const q = query(collection(db, "sale-list"), orderBy("name"));
+    const q = query(collection(db, "sale-list"), orderBy("status") ,orderBy("name"));
     unSubscribe = onSnapshot(q, (querySnapshot) => {
       setGames([]);
       querySnapshot.forEach((doc) => {
@@ -48,7 +48,7 @@ export default function HomePage() {
         </div>
       </div>
       <div className="container flex">
-        {games.map(game => (<Boardgames game={game} />))}
+        {games.map(game => (<Boardgame game={game} />))}
       </div>
     </>
   );
