@@ -14,6 +14,7 @@ export default function AddGame() {
   const [price, setPrice] = useState(0);
   const [bbglink, setBggLink] = useState("");
   const isExpansion = useRef();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const boardgame = {

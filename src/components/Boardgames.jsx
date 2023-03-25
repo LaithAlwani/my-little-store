@@ -1,9 +1,10 @@
-import { collection, doc, getDocs, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { UserContext } from "../lib/context";
 import { db } from "../lib/firebase";
 import { boardgameList } from "../utils/boardgames";
+import {MdDeleteForever} from "react-icons/md"
 
 export default function Boardgames({ game }) {
   const { user } = useContext(UserContext);
@@ -22,6 +23,18 @@ export default function Boardgames({ game }) {
       toast.error(err.message)
     }
     setIsOpen(!isOpen)
+  }
+
+  const deleteBoardgame = async(name, id)=>{
+    try{
+      await deleteDoc(doc(db, "sale-list", id));
+      toast.success(name + " deleted");
+      setIsOpen(!isOpen)
+    }
+    catch (err) {
+      console.log(err)
+      toast.error(err.message);
+    }
   }
 
   return (
@@ -45,6 +58,9 @@ export default function Boardgames({ game }) {
             <option value="pending">pending</option>
             <option value="sold">sold</option>
           </select>
+          {game.status === "sold" && <button className="deleteBtn" onClick={()=>deleteBoardgame(game.name,game.id)}>
+            <MdDeleteForever />
+          </button>}
         </div>
       )}
     </div>
