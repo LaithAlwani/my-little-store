@@ -47,8 +47,8 @@ export default function Boardgame({ game }) {
       )}
       <a href={game.bggLink} target="_blank" key={game.id} className="img-container">
         <img src={game.image} alt={game.name} className="bg-image" />
-        {game.status !== "sold" && !game.isWanted && <h3>${game.price}</h3>}
       </a>
+      {game.status !== "sold" && !game.isWanted && <h3 className="ribbon-banner">${game.price}</h3>}
 
       {user?.email === email && isOpen && (
         <div className="model" onChange={(e) => updateGameStatus(e, game.id)}>
