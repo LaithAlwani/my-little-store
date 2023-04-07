@@ -40,10 +40,10 @@ export default function Navbar() {
           {user && (
             <>
               <Link to="add" className="navLink">
-                <MdAddTask />
+                <MdAddTask size={24} />
               </Link>
               <Link to="/" onClick={logout} className="navLink">
-                <MdLogout />
+                <MdLogout size={24} />
               </Link>
             </>
           )}
