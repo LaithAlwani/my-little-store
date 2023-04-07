@@ -10,7 +10,8 @@ nav h1{
 }
  input[type="text"], 
  input[type="number"] {
-  width: 60%;
+  width: 100%;
+  max-width: 600px;
   display: block;
   padding: 1rem;
   border: none;
@@ -105,11 +106,11 @@ button {
 
 .img-container {
   position: relative;
-  height: 11rem;
+  height: auto;
 }
 .bg-image{
   max-width: 100%;
-  height: auto;
+  height: 9rem;
 }
 
 .status {

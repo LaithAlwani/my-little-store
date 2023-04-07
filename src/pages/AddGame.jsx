@@ -43,7 +43,7 @@ export default function AddGame() {
   const getBggGameInfo = (e) => {
     e.preventDefault();
     const id = bggLink.split('/')[4];
-    fetch(`http://bgg-json.azurewebsites.net/thing/${id}`)
+    fetch(`https://bgg-json.azurewebsites.net/thing/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setGamesArray(prevState => [...prevState, {
