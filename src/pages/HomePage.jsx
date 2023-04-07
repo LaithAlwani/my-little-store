@@ -70,7 +70,7 @@ export default function HomePage() {
         <div className="container">
           <h2>Trade List</h2>
           <p>A list of Games Im looking for that can be offered in a trade.</p>
-          <div className=" flex">
+          <div className="gamelist">
             {lookingForList.map((game) => (
               <Boardgame key={game.id} game={game} />
             ))}
@@ -78,7 +78,7 @@ export default function HomePage() {
         </div>
       ) : (
         <div className="container">
-          <div className=" flex">
+          <div className="gamelist">
             {games.map((game) => (
               <Boardgame key={game.id} game={game} />
             ))}
