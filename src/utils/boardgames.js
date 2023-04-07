@@ -1,3 +1,8 @@
+
+export const email = "laithalwani@gmail.com"
+// export const email = "peach.olive.947@example.com"
+
+
 export const boardgameList = [
   {
     name: "Scoville",
