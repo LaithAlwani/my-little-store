@@ -4,21 +4,19 @@ import { toast } from "react-hot-toast";
 import { UserContext } from "../lib/context";
 import { db } from "../lib/firebase";
 import { MdDeleteForever } from "react-icons/md";
-import { email } from "../utils/boardgames";
 
 export default function Boardgame({ game }) {
   const { user } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
-  const price = useState(game.price)
-
-  const boardGameRef = doc(db, "sale-list", game.id)
+  const price = useState(game.price);
 
   const toggleModle = (e) => {
     e.stopPropagation();
     setIsOpen(!isOpen);
-  }
+  };
 
   const updateGameStatus = async (e) => {
+    const boardGameRef = doc(db, "sale-list", game.id);
     try {
       await updateDoc(boardGameRef, { status: e.target.value });
       toast.success("updated to " + e.target.value);
@@ -30,29 +28,29 @@ export default function Boardgame({ game }) {
   };
 
   const changePrice = async (e) => {
-    const price = e.target.value
+    const boardGameRef = doc(db, "sale-list", game.id);
+    const price = e.target.value;
     try {
-      await updateDoc(boardGameRef, { price })
-      toast.success(`${game.name} price update to ${price}`)
-      setIsOpen(!isOpen)
+      await updateDoc(boardGameRef, { price });
+      toast.success(`${game.name} price update to ${price}`);
+      setIsOpen(!isOpen);
+    } catch (err) {
+      toast.error(err.message);
     }
-    catch (err) {
-      toast.error(err.message)
-    }
-  }
+  };
 
   const ribbonText = () => {
     if (game.isWanted) {
-      return "Wanted"
+      return "Wanted";
     } else {
       if (game.status === "available") {
-        return `$${game.price}`
+        return `$${game.price}`;
       } else if (game.status === "pending") {
-        return `$${game.price} PPU`
+        return `$${game.price} PPU`;
       }
-      return "Sold"
+      return "Sold";
     }
-  }
+  };
 
   const deleteBoardgame = async (name, id) => {
     try {
@@ -69,12 +67,23 @@ export default function Boardgame({ game }) {
       <a href={game.bggLink} target="_blank" key={game.id} className="img-container">
         <img src={game.image} alt={game.name} className="bg-image" />
       </a>
-      {<p  className={`ribbon-banner ${
-            game.isWanted ? "" : game.status === "available" ? " green" : game.status === "sold" ? "red" : "yellow"
+      {
+        <p
+          className={`ribbon-banner ${
+            game.isWanted
+              ? ""
+              : game.status === "available"
+              ? " green"
+              : game.status === "sold"
+              ? "red"
+              : "yellow"
           }`}
-          onClick={toggleModle}>{ribbonText()}</p>}
+          onClick={toggleModle}>
+          {ribbonText()}
+        </p>
+      }
 
-      {user?.email === email && isOpen && (
+      {user && isOpen && (
         <div className="model">
           <select name="" id="" onChange={updateGameStatus}>
             <option value="">Choose Status</option>
