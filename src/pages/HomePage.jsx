@@ -19,13 +19,13 @@ export default function HomePage() {
 
   useEffect(() => {
     let unSubscribe;
-    if (games.length === 0) {
-      unSubscribe = fetchBoardgames("sale-list", setGames);
+    if (!games.length === 0 && !lookingForList.length === 0) {
+      return
     }
 
-    if (lookingForList.length === 0) {
-      unSubscribe = fetchBoardgames("looking-for", setLookingForList);
-    }
+    unSubscribe = fetchBoardgames("sale-list", setGames);
+    unSubscribe = fetchBoardgames("looking-for", setLookingForList);
+    
     return unSubscribe;
   }, []);
   return (
