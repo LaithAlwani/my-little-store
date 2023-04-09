@@ -42,7 +42,7 @@ button {
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
-  min-width: 0;
+  width: 100%;
 }
 
 .logo {
@@ -66,8 +66,8 @@ button {
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
-  row-gap: 2rem;
-  column-gap: 2rem;
+  column-gap: 0.25rem;
+  margin: 0.5rem;
 }
 .gamelist {
   display: flex;
@@ -122,7 +122,7 @@ button {
   /* adjust the below to control the shape */
   --d: 10px;
   --g: 16px;
-  --c:#666;
+  --c: #666;
   /**/
 
   position: absolute;
@@ -146,17 +146,7 @@ button {
     var(--d) calc(100% - var(--d)),
     0 100%
   );
-}
-
-.status {
-  position: absolute;
-  top: -0.5rem;
-  right: -0.5rem;
-  border: 0.1rem solid white;
-  border-radius: 50%;
-  width: 1rem;
-  height: 1rem;
-  z-index: 1;
+  cursor: pointer;
 }
 
 .model {
@@ -173,24 +163,29 @@ button {
   background-color: rgba(211, 211, 211, 0.5);
 }
 
-.mx1 {
-  margin-block: 0.5rem;
-}
-
-.dot {
-  display: inline-block;
+.status{
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  border: 0.1rem solid white;
   border-radius: 50%;
   width: 1rem;
   height: 1rem;
-  margin-inline-start: 0.5rem;
-  margin-inline-end: 0.25rem;
+  z-index: 1;
+}
+
+.dot {
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid  #333;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  background: var(--c);
 }
 
 .green {
-  --d: 10px;
-  --g: 16px;
   --c: green;
-  
 }
 
 .red {
@@ -203,7 +198,7 @@ button {
 
 @media only screen and (max-width: 768px) {
   .gamelist {
-    padding-block: 1rem;
+    padding: 1rem;
     display: grid;
     gap: 1.5rem;
     grid-auto-flow: column;
@@ -211,11 +206,13 @@ button {
     justify-content: flex-start;
     overscroll-behavior-inline: contain;
     scroll-snap-type: inline mandatory;
-    scroll-padding-inline: 0.5rem;
+    scroll-padding-inline: 1rem;
   }
+
   .gamelist::-webkit-scrollbar {
     display: none;
   }
+
   .gamelist > * {
     scroll-snap-align: start;
   }

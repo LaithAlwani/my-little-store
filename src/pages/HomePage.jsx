@@ -6,31 +6,28 @@ import { db } from "../lib/firebase";
 export default function HomePage() {
   const [games, setGames] = useState([]);
   const [lookingForList, setLookingForList] = useState([]);
-  const [isLookingFor, setIsLookingFor] = useState(false);
+
+  const fetchBoardgames = (col, callback) => {
+    const q = query(collection(db, col), orderBy("status"), orderBy("name"));
+    onSnapshot(q, (querySnapshot) => {
+      callback([]);
+      querySnapshot.forEach((doc) => {
+        callback((prevState) => [...prevState, { id: doc.id, ...doc.data() }]);
+      });
+    });
+  };
 
   useEffect(() => {
     let unSubscribe;
-    
-      const q = query(collection(db, "sale-list"), orderBy("status"), orderBy("name"));
-      unSubscribe = onSnapshot(q, (querySnapshot) => {
-        setGames([]);
-        querySnapshot.forEach((doc) => {
-          setGames((prevState) => [...prevState, { id: doc.id, ...doc.data() }]);
-        });
-      });
-    
-    if (lookingForList.length === 0 && isLookingFor) {
-      const q = query(collection(db, "looking-for"), orderBy("name"));
-      unSubscribe = onSnapshot(q, (querySnapshot) => {
-        setGames([]);
-        querySnapshot.forEach((doc) => {
-          console.log(doc.data())
-          setLookingForList((prevState) => [...prevState, { id: doc.id, ...doc.data() }]);
-        });
-      });
+    if (games.length === 0) {
+      unSubscribe = fetchBoardgames("sale-list", setGames);
+    }
+
+    if (lookingForList.length === 0) {
+      unSubscribe = fetchBoardgames("looking-for", setLookingForList);
     }
     return unSubscribe;
-  }, [isLookingFor]);
+  }, []);
   return (
     <>
       <div className="container">
@@ -45,50 +42,45 @@ export default function HomePage() {
           <span className="muted"> click to open google maps</span>
         </h2>
         <p className="muted">*** click a game to checkout its BGG page***</p>
-        <div className="flex mx1">
-          <span>
-            <StautsDot color="green" />
-            Available
-          </span>
-          <span>
-            <StautsDot color="yellow" />
-            pending
-          </span>
-          <span>
-            <StautsDot color="red" />
-            sold
-          </span>
-        </div>
-      </div>
-      <div className="container">
-        <button onClick={() => setIsLookingFor(!isLookingFor)}>
-          {isLookingFor ? "Games for Sale" : "Wanted Games"}
-        </button>
       </div>
 
-      {isLookingFor ? (
-        <div className="container">
-          <h2>Trade List</h2>
-          <p>A list of Games Im looking for that can be offered in a trade.</p>
-          <div className="gamelist">
-            {lookingForList.map((game) => (
-              <Boardgame key={game.id} game={game} />
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div className="container">
+      <div className="container">
+        {games.length > 0 && (
           <div className="gamelist">
             {games.map((game) => (
               <Boardgame key={game.id} game={game} />
             ))}
           </div>
+        )}
+      </div>
+      <div className="container">
+        <div className="flex">
+          <StautsDot color="green" text="Available" />
+
+          <StautsDot color="yellow" text="Pending" />
+
+          <StautsDot color="red" text="Sold" />
         </div>
-      )}
+      </div>
+
+      <div className="container">
+        <h2>Trade List</h2>
+        <p>Boardgames I am in search off.</p>
+        <div className="gamelist">
+          {lookingForList.map((game) => (
+            <Boardgame key={game.id} game={game} />
+          ))}
+        </div>
+      </div>
     </>
   );
 }
 
-const StautsDot = ({ color }) => {
-  return <span className={`dot ${color}`} />;
+const StautsDot = ({ color, text }) => {
+  return (
+    <span className="flex">
+      <span className={`dot ${color}`} />
+      {text}
+    </span>
+  );
 };

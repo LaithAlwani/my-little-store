@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../lib/firebase";
-import { MdLogin, MdLogout, MdAddTask } from "react-icons/md";
+import { MdLogin, MdLogout, MdPostAdd } from "react-icons/md";
 
 import { UserContext } from "../lib/context";
 
@@ -40,7 +40,7 @@ export default function Navbar() {
           {user && (
             <>
               <Link to="add" className="navLink">
-                <MdAddTask size={24} />
+                <MdPostAdd size={24} />
               </Link>
               <Link to="/" onClick={logout} className="navLink">
                 <MdLogout size={24} />

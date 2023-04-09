@@ -14,7 +14,7 @@ export default function Boardgame({ game }) {
   const boardGameRef = doc(db, "sale-list", game.id)
 
   const toggleModle = (e) => {
-    e.preventDefault();
+    e.stopPropagation();
     setIsOpen(!isOpen);
   }
 
@@ -39,7 +39,6 @@ export default function Boardgame({ game }) {
     catch (err) {
       toast.error(err.message)
     }
-    
   }
 
   const deleteBoardgame = async (name, id) => {
@@ -48,7 +47,6 @@ export default function Boardgame({ game }) {
       toast.success(name + " deleted");
       setIsOpen(!isOpen);
     } catch (err) {
-      console.log(err);
       toast.error(err.message);
     }
   };
