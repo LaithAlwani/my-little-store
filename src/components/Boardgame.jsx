@@ -41,6 +41,19 @@ export default function Boardgame({ game }) {
     }
   }
 
+  const ribbonText = () => {
+    if (game.isWanted) {
+      return "Wanted"
+    } else {
+      if (game.status === "available") {
+        return `$${game.price}`
+      } else if (game.status === "pending") {
+        return `$${game.price} PPU`
+      }
+      return "Sold"
+    }
+  }
+
   const deleteBoardgame = async (name, id) => {
     try {
       await deleteDoc(doc(db, "sale-list", id));
@@ -59,7 +72,7 @@ export default function Boardgame({ game }) {
       {<p  className={`ribbon-banner ${
             game.isWanted ? "" : game.status === "available" ? " green" : game.status === "sold" ? "red" : "yellow"
           }`}
-          onClick={toggleModle}>{game.status === "sold" ? "Sold" : (game.isWanted ? "Wanted" : `$${game.price}`)}</p>}
+          onClick={toggleModle}>{ribbonText()}</p>}
 
       {user?.email === email && isOpen && (
         <div className="model">

@@ -5,9 +5,10 @@ nav {
   display: flex;
   align-items: center;
 }
-nav h1 {
+nav h3 {
   margin: 0;
 }
+
 input[type="text"],
 input[type="number"] {
   width: 100%;
@@ -49,7 +50,10 @@ button {
   width: 48px;
 }
 .links {
+  display: flex;
   margin-left: auto;
+  align-items: center;
+  justify-content: center;
 }
 .navLink {
   padding-inline: 0.5rem;
@@ -81,7 +85,10 @@ button {
 .location {
   font-size: 1.2rem;
   font-weight: bold;
-  text-decoration: underline;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .muted {
@@ -161,27 +168,6 @@ button {
   justify-content: space-between;
   align-items: center;
   background-color: rgba(211, 211, 211, 0.5);
-}
-
-.status{
-  position: absolute;
-  top: -0.5rem;
-  right: -0.5rem;
-  border: 0.1rem solid white;
-  border-radius: 50%;
-  width: 1rem;
-  height: 1rem;
-  z-index: 1;
-}
-
-.dot {
-  display: inline-flex;
-  align-items: center;
-  border: 2px solid  #333;
-  border-radius: 50%;
-  width: 1rem;
-  height: 1rem;
-  background: var(--c);
 }
 
 .green {
