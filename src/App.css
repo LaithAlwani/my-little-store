@@ -104,7 +104,7 @@ button {
   box-shadow: 2px 2px 20px #9f9f9f;
 }
 
-.bg-container h3 {
+.bg-container p {
   margin-block: 0.25rem;
 }
 
@@ -122,7 +122,7 @@ button {
   /* adjust the below to control the shape */
   --d: 10px;
   --g: 16px;
-  --c:  #666;
+  --c:#666;
   /**/
 
   position: absolute;
@@ -187,15 +187,18 @@ button {
 }
 
 .green {
-  background: linear-gradient(200deg, lightgreen, green, lightgreen);
+  --d: 10px;
+  --g: 16px;
+  --c: green;
+  
 }
 
 .red {
-  background: linear-gradient(200deg, rgb(242, 127, 146) 10%, red 90%, rgb(242, 127, 146));
+  --c: red;
 }
 
 .yellow {
-  background: linear-gradient(200deg, rgba(255, 200, 0) 10%, orange 90%, yellow);
+  --c: rgb(248, 178, 49);
 }
 
 @media only screen and (max-width: 768px) {
