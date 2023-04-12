@@ -1,12 +1,12 @@
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { useContext, useState } from "react";
+import { arrayRemove, arrayUnion, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { UserContext } from "../lib/context";
 import { db } from "../lib/firebase";
 import { MdDeleteForever } from "react-icons/md";
 
-export default function Boardgame({ game }) {
-  const{id, name, price, image, status, bggLink, isWanted } = game
+export default function Boardgame({ storeId, game }) {
+  const { id, name, price, image, status, bggLink, isWanted } = game;
   const { user } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -15,23 +15,23 @@ export default function Boardgame({ game }) {
     setIsOpen(!isOpen);
   };
 
-  const updateBoardgame = async(e, field) => {
-    const boardGameRef = doc(db, "sale-list", id);
-    const newValue = e.target.value
+  const updateBoardgame = async (e, id, field) => {
+    const boardgameRef = doc(db, "stores", storeId, "boardgames", id);
+    const newValue = e.target.value;
     try {
-      await updateDoc(boardGameRef, { [field]: newValue });
-      toast.success(`${name} price update to ${newValue}`);
+      await updateDoc(boardgameRef, { [field]: newValue });
+
+      toast.success(`${name} update ${field} to ${newValue}`);
       setIsOpen(!isOpen);
-    }
-    catch (err) {
+    } catch (err) {
       toast.error(err.message);
     }
-  }
+  };
 
-  const deleteBoardgame = async (id, name, wanted) => {
+  const deleteBoardgame = async () => {
+    const boardgameRef = doc(db, "stores", storeId, "boardgames", id);
     try {
-      const tragetCollection = wanted ? "looking-for" : "sale-list";
-      await deleteDoc(doc(db, tragetCollection, id));
+      await deleteDoc(boardgameRef);
       toast.success(name + " deleted");
       setIsOpen(!isOpen);
     } catch (err) {
@@ -49,17 +49,20 @@ export default function Boardgame({ game }) {
       </div>
       {user && isOpen && (
         <div className="model">
-          <select name="" id="" onChange={(e)=>updateBoardgame(e, "status")}>
+          <select name="" id="" onChange={(e) => updateBoardgame(e, game.id, "status")}>
             <option value="">Choose Status</option>
-            <option value="available">avialable</option>
-            <option value="pending">pending</option>
-            <option value="sold">sold</option>
+            {game.status !== "available" && <option value="available">avialable</option>}
+            {game.status !== "pending" && <option value="pending">pending</option>}
+            {game.status !== "sold" && <option value="sold">sold</option>}
           </select>
-          <input type="number" placeholder="price" defaultValue={price} onBlur={(e)=>updateBoardgame(e, "price")} />
+          <input
+            type="number"
+            placeholder="price"
+            defaultValue={price}
+            onBlur={(e) => updateBoardgame(e, game.id, "price")}
+          />
           {(status === "sold" || isWanted) && (
-            <button
-              className="deleteBtn"
-              onClick={() => deleteBoardgame(id, name, isWanted)}>
+            <button className="deleteBtn" onClick={deleteBoardgame}>
               <MdDeleteForever />
             </button>
           )}

@@ -1,43 +1,43 @@
-import { useNavigate } from "react-router-dom";
-import { addDoc, collection } from "firebase/firestore";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  doc,
+  arrayUnion,
+  updateDoc,
+  addDoc,
+  collection,
+  serverTimestamp,
+} from "firebase/firestore";
 import React, { useContext, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { UserContext } from "../lib/context";
 import { db } from "../lib/firebase";
-import { boardgameList } from "../utils/boardgames";
 import Boardgame from "../components/Boardgame";
 
-export default function AddGame() {
+export default function AddGames() {
   const { user } = useContext(UserContext);
   const [price, setPrice] = useState("");
   const [bggLink, setBggLink] = useState("");
-  const [gamesArray, setGamesArray] = useState([]);
-  const lookingFor = useRef();
+  const [boardgames, setBoardgames] = useState([]);
+  const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const storeId = location.pathname.split("/")[1];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    gamesArray.forEach((game) => {
-      const targetCollection = game.isWanted ? "looking-for" : "sale-list";
-      addDoc(collection(db, targetCollection), game)
-        .then((docRef) => {
-          toast.success("Document written with ID: " + docRef.id);
-          setGamesArray([]);
-          navigate("/")
+    boardgames.forEach((game) => {
+      addDoc(collection(db, "stores", storeId, "boardgames"), game)
+        .then(() => {
+          toast.success(`${game.name} added!`);
+          navigate(`/${storeId}`);
         })
         .catch((err) => {
           console.log(err);
           toast.error(err.message);
         });
     });
-  };
-
-  const uploadBoardgames = () => {
-    boardgameList.forEach((game) => {
-      addDoc(collection(db, "sale-list"), game)
-        .then(() => toast.success(game.name + added))
-        .catch((err) => toast.error(err.message));
-    });
+    await updateDoc(doc(db, "stores", storeId), { updatedAt: serverTimestamp() }, { merge: true });
+    setBoardgames([]);
   };
 
   const getBggGameInfo = (e) => {
@@ -46,13 +46,14 @@ export default function AddGame() {
     fetch(`https://bgg-json.azurewebsites.net/thing/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        setGamesArray((prevState) => [
+        console.log(data);
+        setBoardgames((prevState) => [
           ...prevState,
           {
             name: data.name,
             image: data.thumbnail,
             isExpansion: data.isExpansion,
-            isWanted: lookingFor.current.checked,
+            isWanted: checked,
             bggLink,
             price,
             status: "available",
@@ -64,7 +65,12 @@ export default function AddGame() {
   };
 
   return user ? (
-    <div className="container">
+    <form className="form-container">
+      <h3>Just past the boardgames' bgg link and set a price</h3>
+      <label htmlFor="">
+        <input onChange={() => setChecked(!checked)} type="checkbox" placeholder="bbglink" />
+        Looking for a game
+      </label>
       <input
         type="text"
         placeholder="bbglink"
@@ -76,22 +82,16 @@ export default function AddGame() {
         placeholder="price"
         value={price}
         onChange={(e) => setPrice(parseInt(e.target.value))}
+        disabled={checked}
       />
-      <label htmlFor="">
-        <input ref={lookingFor} type="checkbox" placeholder="bbglink" />
-        LookingFor?
-      </label>
-
       <button onClick={getBggGameInfo}>AddGame</button>
-      {/* <button onClick={uploadBoardgames}>Upload games</button> */}
-
       <div className="flex">
-        {gamesArray.map((game, i) => (
+        {boardgames.map((game, i) => (
           <Boardgame key={i} game={game} />
         ))}
       </div>
-      {gamesArray.length > 0 && <button onClick={handleSubmit}>Sumbit Games</button>}
-    </div>
+      {boardgames.length > 0 && <button onClick={handleSubmit}>Sumbit Games</button>}
+    </form>
   ) : (
     <div className="container">
       <h1>Unauthorized</h1>
