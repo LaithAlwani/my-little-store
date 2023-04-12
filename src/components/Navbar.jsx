@@ -43,6 +43,9 @@ export default function Navbar() {
         {user && (
           <>
             <Link to="add" className="navLink">
+              <img src={user.photoURL} alt="" className="avatar" />
+            </Link>
+            <Link to="add" className="navLink">
               <MdPostAdd size={24} />
             </Link>
             <Link to="/" onClick={logout} className="navLink">

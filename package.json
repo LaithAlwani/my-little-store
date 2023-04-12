@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && firebase deploy --only hosting",
     "preview": "vite preview",
     "kill": "npx kill-port 5000 5001 8080 8085 4000 9229",
     "fb": "firebase deploy",

@@ -8,7 +8,12 @@ nav {
 nav h3 {
   margin: 0;
 }
-
+.avatar{
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid black;
+}
 input[type="text"],
 input[type="number"] {
   width: 100%;
@@ -112,7 +117,7 @@ button {
 
 .bg-container p {
   margin-block: 0.25rem;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 .img-container {

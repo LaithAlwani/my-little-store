@@ -77,7 +77,7 @@ const Ribbon = ({ status, isWanted, price }) => {
       if (status === "available") {
         return `$${price}`;
       } else if (status === "pending") {
-        return `$${price} - PPU`;
+        return `$${price} PPU`;
       }
       return status.toUpperCase();
     }
