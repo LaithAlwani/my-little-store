@@ -20,6 +20,7 @@ export default function StoreFront() {
     setLoading(true);
     onSnapshot(docRef, (docSnapshot) => {
       callback({ id: docSnapshot.id, ...docSnapshot.data() });
+      setLoading(false)
     });
   };
 
@@ -73,13 +74,15 @@ export default function StoreFront() {
         </div>
       </div>
       <div className="container">
-        {store && boardgames?.length > 0 && (
+        {store && boardgames?.length > 0 ? (
           <div className="gamelist">
             {boardgames.map((game) => (
               <Boardgame key={game.id} storeId={currentStoreId} game={game} />
             ))}
           </div>
-        )}
+        ) :
+        <h1>This store is empty</h1>
+        }
       </div>
     </>
   ) : (

@@ -45,7 +45,7 @@ export default function CreateStore() {
   return user ? (
     <form onSubmit={createStore} className="form-container">
       <h1>Create your own store</h1>
-      <h3>Let's get started with your store name and an approximate pickup location</h3>
+      <h3>Let's get started with your store name, Facebook url and an approximate pickup location on google maps</h3>
       <input type="text" placeholder="Store Name" onChange={(e) => setName(e.target.value)} />
       <input type="text" placeholder="facebook" onChange={(e) => setFacebook(e.target.value)} />
       <input type="text" placeholder="location" onChange={(e) => setLocation(e.target.value)} />

@@ -34,12 +34,6 @@ export default function HomePage() {
   }, []);
   return !loading ? (
     <div className="container">
-      {!storeId && user && (
-        <Link to="create" className="bg-container">
-          <BsHouseAddFill size={64} />
-          <h3>Create Store</h3>
-        </Link>
-      )}
       {stores.length > 0 ? (
         <div className="gamelist">
           {stores.map((store) => (
@@ -47,7 +41,13 @@ export default function HomePage() {
           ))}
         </div>
       ) : (
-        <h1>No Stores Yet</h1>
+        <h1>No Stores Found</h1>
+      )}
+      {!storeId && user && (
+        <Link to="create" className="bg-container">
+          <BsHouseAddFill size={64} />
+          <h3>Create Store</h3>
+        </Link>
       )}
     </div>
   ) : (
