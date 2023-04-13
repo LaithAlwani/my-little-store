@@ -191,6 +191,30 @@ button {
   --c: rgb(248, 178, 49);
 }
 
+.add-game-icon{
+  position: fixed;
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 1rem;
+  top: 6rem;
+  right: 3rem;
+}
+
+.loader-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
+.loader{
+  background-image: url("/images/loader.svg");
+  background-position: center;
+  width: 14rem;
+  height: 4rem;
+  margin: 10rem auto;
+}
+
 @media only screen and (max-width: 768px) {
   .gamelist {
     padding: 1rem;

@@ -1,18 +1,23 @@
 import { doc, onSnapshot, collection, query, orderBy } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Boardgame from "../components/Boardgame";
 import { db } from "../lib/firebase";
-import { useLocation } from "react-router-dom";
-import { MdLocationOn } from "react-icons/md";
+import { Link, useLocation } from "react-router-dom";
+import { MdLocationOn, MdPostAdd, MdFacebook } from "react-icons/md";
+import { UserContext } from "../lib/context";
+import Loader from "../components/Loader";
 
 export default function StoreFront() {
+  const { storeId } = useContext(UserContext);
   const [store, setStore] = useState([]);
   const [boardgames, setBoardgames] = useState([]);
+  const [loading, setLoading] = useState([]);
   const location = useLocation();
-  const storeId = location.pathname.split("/")[1];
+  const currentStoreId = location.pathname.split("/")[1];
 
   const fetchStore = (id, callback) => {
     const docRef = doc(db, "stores", id);
+    setLoading(true);
     onSnapshot(docRef, (docSnapshot) => {
       callback({ id: docSnapshot.id, ...docSnapshot.data() });
     });
@@ -20,7 +25,7 @@ export default function StoreFront() {
 
   const fetchBoardgames = () => {
     const q = query(
-      collection(db, "stores", storeId, "boardgames"),
+      collection(db, "stores", currentStoreId, "boardgames"),
       orderBy("isWanted"),
       orderBy("status"),
       orderBy("name")
@@ -28,10 +33,8 @@ export default function StoreFront() {
     onSnapshot(q, (querySnapshot) => {
       setBoardgames([]);
       querySnapshot.forEach((docRef) => {
-        setBoardgames((prevState) => [
-          ...prevState,
-          { id: docRef.id, ...docRef.data() },
-        ]);
+        setBoardgames((prevState) => [...prevState, { id: docRef.id, ...docRef.data() }]);
+        setLoading(false);
       });
     });
   };
@@ -42,29 +45,44 @@ export default function StoreFront() {
       return;
     }
     unSubscribe = fetchBoardgames();
-    fetchStore(storeId, setStore);
+    fetchStore(currentStoreId, setStore);
     return unSubscribe;
   }, []);
-  return (
+  return !loading ? (
     <>
       <div className="container">
         <h1>{store.name}</h1>
         <p className="muted">*** click a game to checkout its BGG page***</p>
-        <a href={store.location} target="_blank" className="location">
-          <MdLocationOn size={32} />
-          <strong>Pickup</strong>
-        </a>
+        <div className="add-game-icon">
+          {storeId === currentStoreId && (
+            <Link to="addgames">
+              <MdPostAdd size={48} />
+            </Link>
+          )}
+          {store.location && (
+            <a href={store.location} target="_blank" className="location">
+              <MdLocationOn size={32} />
+              <strong>Pickup</strong>
+            </a>
+          )}
+          {store.facebook && (
+            <a href={store.facebook} target="_blank" className="location">
+              <MdFacebook size={40} color="#4267B2" />
+            </a>
+          )}
+        </div>
       </div>
-
       <div className="container">
         {store && boardgames?.length > 0 && (
           <div className="gamelist">
             {boardgames.map((game) => (
-              <Boardgame key={game.id} storeId={storeId} game={game} />
+              <Boardgame key={game.id} storeId={currentStoreId} game={game} />
             ))}
           </div>
         )}
       </div>
     </>
+  ) : (
+    <Loader />
   );
 }

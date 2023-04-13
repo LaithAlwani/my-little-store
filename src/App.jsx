@@ -22,7 +22,7 @@ function App() {
           <Route path=":store_id" element={<StoreFront />} />
           <Route path=":store_id/addgames" element={<AddGames />} />
           <Route path="login" element={<Login />} />
-          <Route path="newstore" element={<CreateStore />} />
+          <Route path="create" element={<CreateStore />} />
         </Routes>
       </Router>
     </UserContext.Provider>
