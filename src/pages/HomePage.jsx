@@ -1,4 +1,12 @@
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  getDocs,
+  collectionGroup,
+  where,
+} from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { db } from "../lib/firebase";
 import Store from "../components/Store";
@@ -11,6 +19,7 @@ export default function HomePage() {
   const { user, storeId } = useContext(UserContext);
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState([]);
+  const [search, setSearch] = useState([]);
 
   const fetchStores = (col, callback) => {
     setLoading(true);
@@ -24,7 +33,17 @@ export default function HomePage() {
     });
   };
 
+  const getBoardGameByName = async (search) => {
+    const stores = query(collectionGroup(db, "boardgames"), where("name", ">=", search));
+    const querySnapshot = await getDocs(stores);
+    console.log(querySnapshot.empty);
+    querySnapshot.forEach((doc) => {
+      console.log(doc.id, " => ", doc.data());
+    });
+  };
+
   useEffect(() => {
+
     let unSubscribe;
     if (stores.length !== 0) {
       return;
@@ -34,21 +53,20 @@ export default function HomePage() {
   }, []);
   return !loading ? (
     <div className="container">
-      {stores.length > 0 ? (
-        <div className="gamelist">
-          {stores.map((store) => (
-            <Store key={store.id} store={store} />
-          ))}
-        </div>
-      ) : (
-        <h1>No Stores Found</h1>
-      )}
-      {!storeId && user && (
-        <Link to="create" className="bg-container">
-          <BsHouseAddFill size={64} />
-          <h3>Create Store</h3>
-        </Link>
-      )}
+      <input type="text" onChange={(e)=>setSearch(e.target.value)} placeholder="search boardgames" value={search} onBlur={()=>getBoardGameByName(search)} />
+      <div className="gamelist">
+        {!storeId && user && (
+          <Link to="create" className="bg-container">
+            <BsHouseAddFill size={64} />
+            <h3>Create Store</h3>
+          </Link>
+        )}
+        {stores.length > 0 ? (
+          stores.map((store) => <Store key={store.id} store={store} />)
+        ) : (
+          <h1>No Stores Found</h1>
+        )}
+      </div>
     </div>
   ) : (
     <Loader />

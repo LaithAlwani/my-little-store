@@ -1,26 +1,48 @@
-import {  deleteDoc, doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { UserContext } from "../lib/context";
 import { db } from "../lib/firebase";
-import { MdDeleteForever } from "react-icons/md";
+import { MdDeleteForever, MdInfo } from "react-icons/md";
 
 export default function Boardgame({ storeId: currentStoreId, game }) {
-  const { id, name, price, image, status, bggLink, isWanted } = game;
+  const {
+    id,
+    name,
+    price,
+    image,
+    status,
+    bggLink,
+    isWanted,
+    condition,
+    missingPieces,
+    gameDamage,
+    boxDamage,
+    description,
+  } = game;
   const { user, storeId } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   const toggleModle = (e) => {
     e.stopPropagation();
     setIsOpen(!isOpen);
   };
+  const toggleInfoModel = () => {
+    setIsInfoOpen(!isInfoOpen);
+  };
+  toggleInfoModel
 
   const updateBoardgame = async (e, id, field) => {
     const boardgameRef = doc(db, "stores", currentStoreId, "boardgames", id);
     const newValue = e.target.value;
     try {
-      await updateDoc(boardgameRef, { [field]: newValue },  {merge:true});
-      await updateDoc(doc (db,"stores", currentStoreId),{updatedAt:serverTimestamp()}, {merge:true})
+      await updateDoc(boardgameRef, { [field]: newValue }, { merge: true });
+      await updateDoc(
+        doc(db, "stores", currentStoreId),
+        { updatedAt: serverTimestamp() },
+        { merge: true }
+      );
       toast.success(`${name} update ${field} to ${newValue}`);
       setIsOpen(!isOpen);
     } catch (err) {
@@ -42,8 +64,20 @@ export default function Boardgame({ storeId: currentStoreId, game }) {
   return (
     <div className="bg-container">
       <a href={bggLink} target="_blank" key={id} className="img-container">
+        {console.log(game)}
         <img src={image} alt={name} className="bg-image" />
+
       </a>
+      <MdInfo size={24} className="bg-info" onClick={toggleInfoModel} />
+      {isInfoOpen && <div className="model">
+        <div className="tags">
+          <Tag value={condition} color="green" />
+          <Tag value={gameDamage ? "damaged" : null} color="orange" />
+          <Tag value={boxDamage ? "box damage" : null} color="blue" />
+          <Tag value={missingPieces ? "missing components" : null} color="red" />
+          {description && <p className="text-left">{description}</p>}
+        </div>
+      </div>}
       <div onClick={toggleModle}>
         <Ribbon status={status} isWanted={isWanted} price={price} />
       </div>
@@ -94,3 +128,14 @@ const Ribbon = ({ status, isWanted, price }) => {
     </p>
   );
 };
+
+const Tag = ({ value, color }) => {
+  return (
+    value && (
+      <span className="tag" style={{ background: color }}>
+        {value}
+      </span>
+    )
+  );
+};
+

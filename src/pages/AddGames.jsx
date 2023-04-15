@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { UserContext } from "../lib/context";
 import { db } from "../lib/firebase";
 import Boardgame from "../components/Boardgame";
+import { XMLParser } from "fast-xml-parser";
 
 export default function AddGames() {
   const { user, storeId } = useContext(UserContext);
@@ -12,12 +13,17 @@ export default function AddGames() {
   const [bggLink, setBggLink] = useState("");
   const [boardgames, setBoardgames] = useState([]);
   const [iso, setIso] = useState(false);
+  const [condition, setCondition] = useState("");
   const [boxDamage, setBoxDamage] = useState(false);
   const [gameDamage, setGameDamage] = useState(false);
   const [missingPieces, setMissingPieces] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const currentStoreId = location.pathname.split("/")[1];
+
+  const options = {
+    ignoreAttributes: false,
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,20 +49,26 @@ export default function AddGames() {
   const getBggGameInfo = (e) => {
     e.preventDefault();
     const id = bggLink.split("/")[4];
-    fetch(`https://bgg-json.azurewebsites.net/thing/${id}`)
-      .then((res) => res.json())
+    fetch(`https://boardgamegeek.com/xmlapi2/thing?id=${id}`)
+      .then((res) => res.text())
       .then((data) => {
-        if (data) {
+        const parser = new XMLParser(options);
+        const {
+          items: { item },
+        } = parser.parse(data);
+        console.log(item["@_type"] === "boardgameexpansion");
+        if (item) {
           setBoardgames((prevState) => [
             ...prevState,
             {
-              name: data.name,
-              image: data.thumbnail,
-              isExpansion: data.isExpansion,
+              name: item.name[0]["@_value"].toLowerCase(),
+              image: item.image,
+              isExpansion: item["@_type"] === "boardgameexpansion",
               isWanted: iso,
               bggLink,
               price,
               status: "available",
+              condition,
               missingPieces,
               boxDamage,
               gameDamage,
@@ -67,9 +79,8 @@ export default function AddGames() {
         } else {
           toast.error("please try again")
         }
-        
       })
-      .catch((err) => toast.error("try again please"));
+      .catch((err) => console.log(err));
   };
 
   return user && storeId === currentStoreId ? (
@@ -93,7 +104,7 @@ export default function AddGames() {
             value={price}
             onChange={(e) => setPrice(parseInt(e.target.value))}
           />
-          <select>
+          <select onChange={(e) => setCondition(e.target.value)}>
             <option defaultChecked>Codition</option>
             <option value="like-new">like new</option>
             <option value="used">Used</option>
@@ -127,7 +138,7 @@ export default function AddGames() {
       )}
 
       <button onClick={getBggGameInfo}>AddGame</button>
-      <div className="flex">
+      <div className="gamelist">
         {boardgames.map((game, i) => (
           <Boardgame key={i} game={game} />
         ))}

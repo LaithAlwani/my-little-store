@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && firebase deploy --only hosting",
+    "build": "vite build",
     "preview": "vite preview",
     "kill": "npx kill-port 5000 5001 8080 8085 4000 9229",
     "fb": "firebase deploy",
@@ -13,6 +13,7 @@
     "fbh": "firebase deploy --only hosting"
   },
   "dependencies": {
+    "fast-xml-parser": "^4.2.0",
     "firebase": "^9.18.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
