@@ -61,6 +61,7 @@ export default function AddGames() {
           setBoardgames((prevState) => [
             ...prevState,
             {
+              storeId,
               name: item.name[0]["@_value"].toLowerCase(),
               image: item.image,
               isExpansion: item["@_type"] === "boardgameexpansion",

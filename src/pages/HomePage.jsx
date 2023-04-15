@@ -3,6 +3,8 @@ import {
   onSnapshot,
   query,
   orderBy,
+  doc,
+  getDoc,
   getDocs,
   collectionGroup,
   where,
@@ -11,6 +13,7 @@ import { useContext, useEffect, useState } from "react";
 import { db } from "../lib/firebase";
 import Store from "../components/Store";
 import { BsHouseAddFill } from "react-icons/bs";
+import { MdOutlineSearch } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { UserContext } from "../lib/context";
 import Loader from "../components/Loader";
@@ -20,6 +23,7 @@ export default function HomePage() {
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState([]);
   const [search, setSearch] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   const fetchStores = (col, callback) => {
     setLoading(true);
@@ -34,16 +38,27 @@ export default function HomePage() {
   };
 
   const getBoardGameByName = async (search) => {
+    if (!search) {
+      return fetchStores("stores", setStores);
+    }
+    setLoading(true)
     const stores = query(collectionGroup(db, "boardgames"), where("name", ">=", search));
     const querySnapshot = await getDocs(stores);
-    console.log(querySnapshot.empty);
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, " => ", doc.data());
-    });
+    if (!querySnapshot.empty) {
+      return querySnapshot.forEach((docSnapshot) => {
+        setStores([]);
+        getDoc(doc(db, "stores", docSnapshot.data().storeId)).then((docRef) => {
+          setStores((prevState) => [...prevState, { id: docRef.id, ...docRef.data() }]);
+          setLoading(false);
+        });
+      });
+    } else {
+      setLoading(false);
+    }
+    return setStores([]);
   };
 
   useEffect(() => {
-
     let unSubscribe;
     if (stores.length !== 0) {
       return;
@@ -53,7 +68,17 @@ export default function HomePage() {
   }, []);
   return !loading ? (
     <div className="container">
-      <input type="text" onChange={(e)=>setSearch(e.target.value)} placeholder="search boardgames" value={search} onBlur={()=>getBoardGameByName(search)} />
+      <div className="search-bar-container">
+        <MdOutlineSearch size={32} onClick={() => setIsSearching(!isSearching)} />
+        <input
+          type="text"
+          className={isSearching ? "search-bar searching" : "search-bar"}
+          placeholder="search boardgame"
+          onChange={(e) => setSearch(e.target.value)}
+          onBlur={() => getBoardGameByName(search)}
+          value={search}
+        />
+      </div>
       <div className="gamelist">
         {!storeId && user && (
           <Link to="create" className="bg-container">
