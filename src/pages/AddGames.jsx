@@ -6,7 +6,7 @@ import { UserContext } from "../lib/context";
 import { db } from "../lib/firebase";
 import Boardgame from "../components/Boardgame";
 import { XMLParser } from "fast-xml-parser";
-import { MdDeleteOutline } from "react-icons/md";
+import Loader from "../components/Loader";
 
 const options = {
   ignoreAttributes: false,
@@ -18,16 +18,18 @@ export default function AddGames() {
   const [bggLink, setBggLink] = useState("");
   const [boardgames, setBoardgames] = useState([]);
   const [iso, setIso] = useState(false);
-  const [condition, setCondition] = useState("");
+  const [condition, setCondition] = useState("like-new");
   const [boxDamage, setBoxDamage] = useState(false);
   const [gameDamage, setGameDamage] = useState(false);
   const [missingPieces, setMissingPieces] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const currentStoreId = location.pathname.split("/")[1];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     boardgames.forEach((game) => {
       addDoc(collection(db, "stores", currentStoreId, "boardgames"), game)
         .then(() => {
@@ -57,7 +59,6 @@ export default function AddGames() {
         const {
           items: { item },
         } = parser.parse(data);
-        console.log(item["@_type"] === "boardgameexpansion");
         if (item) {
           setBoardgames((prevState) => [
             ...prevState,
@@ -70,7 +71,7 @@ export default function AddGames() {
               bggLink,
               price,
               status: "available",
-              condition,
+              condition: condition,
               missingPieces,
               boxDamage,
               gameDamage,
@@ -86,7 +87,7 @@ export default function AddGames() {
   };
 
   return user && storeId === currentStoreId ? (
-    <form className="form-container">
+    <form onSubmit={getBggGameInfo} className="form-container">
       <h3>Just paste the boardgames' bgg url and set a price</h3>
       <label htmlFor="">
         <input onChange={() => setIso(!iso)} type="checkbox" placeholder="bbglink" />
@@ -105,10 +106,10 @@ export default function AddGames() {
             placeholder="price"
             value={price}
             onChange={(e) => setPrice(parseInt(e.target.value))}
+            required
           />
           <select onChange={(e) => setCondition(e.target.value)}>
-            <option defaultChecked>Codition</option>
-            <option value="like-new">like new</option>
+            <option value="like-new">Like new</option>
             <option value="used">Used</option>
             <option value="sealed">Sealed</option>
           </select>
@@ -139,13 +140,17 @@ export default function AddGames() {
         </>
       )}
 
-      <button onClick={getBggGameInfo}>AddGame</button>
+      <button>AddGame</button>
       <div className="gamelist">
         {boardgames.map((game, i) => (
           <Boardgame key={i} game={game} />
         ))}
       </div>
-      {boardgames.length > 0 && <button onClick={handleSubmit}>Sumbit Games</button>}
+      {boardgames.length > 0 && (
+        <button onClick={handleSubmit} disabled={loading}>
+          {loading ? <Loader /> : "Sumbit Games"}
+        </button>
+      )}
     </form>
   ) : (
     <div className="container">

@@ -14,14 +14,15 @@ export default function CreateStore() {
 
   const createStore = async (e) => {
     e.preventDefault();
-    if (!name || !facebook) {
-      return toast.error("please enter store name and facebook url");
+    if (!name || !facebook || !location) {
+      return toast.error("enter store name, facebook url and location");
     }
     addDoc(collection(db, "stores"), {
-      location,
       name,
       uid: user.uid,
       facebook,
+      location,
+      createdAt:serverTimestamp(),
       updatedAt: serverTimestamp(),
     })
       .then((docRef) => {

@@ -41,7 +41,7 @@ export default function HomePage() {
     if (!search) {
       return fetchStores("stores", setStores);
     }
-    setLoading(true)
+    setLoading(true);
     const stores = query(collectionGroup(db, "boardgames"), where("name", ">=", search));
     const querySnapshot = await getDocs(stores);
     if (!querySnapshot.empty) {
@@ -94,6 +94,8 @@ export default function HomePage() {
       </div>
     </div>
   ) : (
-    <Loader />
+    <div className="loader-container">
+      <Loader />
+    </div>
   );
 }

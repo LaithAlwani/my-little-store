@@ -23,7 +23,7 @@ input {
   border-radius: 0.5rem;
   margin-block: 1rem;
 }
-input[type="checkbox"]{
+input[type="checkbox"] {
   width: inherit;
 }
 label {
@@ -41,6 +41,7 @@ button {
   color: white;
   font-weight: bold;
   margin-block: 0.5rem;
+  line-height: 1.5rem;
 }
 
 .text-left {
@@ -109,10 +110,9 @@ button {
 .searching {
   width: 100%;
   border-bottom: 1px solid #666;
-  
 }
 .searching:focus,
-.searching:active{
+.searching:active {
 }
 
 .flex {
@@ -157,7 +157,7 @@ button {
   align-items: center;
   background: rgba(214, 214, 214, 0.762);
   border: 1px solid rgb(150, 150, 150);
-  
+
   border-radius: 0.5rem;
   box-shadow: 2px 2px 20px #9f9f9f;
 }
@@ -279,11 +279,12 @@ button {
 }
 
 .loader {
-  background-image: url("/images/loader.svg");
+  display: block;
+  background-image: url("/images/loader100px.svg");
   background-position: center;
-  width: 14rem;
-  height: 4rem;
-  margin: 10rem auto;
+  width: 7rem;
+  height: 1.5rem;
+  margin-inline: auto;
 }
 
 @media only screen and (max-width: 768px) {

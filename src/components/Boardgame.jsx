@@ -87,9 +87,7 @@ export default function Boardgame({ storeId: currentStoreId, game }) {
             onBlur={(e) => updateBoardgame(e, game.id, "price")}
           />
           {(status === "sold" || isWanted) && (
-            <button className="deleteBtn">
-              <RemoveBoardgame id={game.id} storeId={currentStoreId} name={game.name} />
-            </button>
+            <RemoveBoardgame id={game.id} storeId={currentStoreId} name={game.name} />
           )}
         </div>
       )}
