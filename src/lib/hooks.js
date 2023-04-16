@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { auth, db } from "../lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
+import { XMLParser } from "fast-xml-parser";
 
 export const useUserData = () => {
   const [user, setUser] = useState(null);
@@ -14,7 +15,7 @@ export const useUserData = () => {
     unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
-        onSnapshot(doc(db, "users", auth.currentUser.uid),docRef => {
+        onSnapshot(doc(db, "users", auth.currentUser.uid), (docRef) => {
           setStoreId(docRef.data().storeId);
         });
         setLoading(false);
@@ -28,3 +29,5 @@ export const useUserData = () => {
   }, [user]);
   return { user, storeId, loading };
 };
+
+

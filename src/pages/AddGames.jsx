@@ -6,6 +6,11 @@ import { UserContext } from "../lib/context";
 import { db } from "../lib/firebase";
 import Boardgame from "../components/Boardgame";
 import { XMLParser } from "fast-xml-parser";
+import { MdDeleteOutline } from "react-icons/md";
+
+const options = {
+  ignoreAttributes: false,
+};
 
 export default function AddGames() {
   const { user, storeId } = useContext(UserContext);
@@ -20,10 +25,6 @@ export default function AddGames() {
   const navigate = useNavigate();
   const location = useLocation();
   const currentStoreId = location.pathname.split("/")[1];
-
-  const options = {
-    ignoreAttributes: false,
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,9 +77,9 @@ export default function AddGames() {
             },
           ]);
           setBggLink("");
-        setPrice("");
+          setPrice("");
         } else {
-          toast.error("please try again")
+          toast.error("please try again");
         }
       })
       .catch((err) => console.log(err));
@@ -89,7 +90,7 @@ export default function AddGames() {
       <h3>Just paste the boardgames' bgg url and set a price</h3>
       <label htmlFor="">
         <input onChange={() => setIso(!iso)} type="checkbox" placeholder="bbglink" />
-        Looking for a game
+        Looking for a game?
       </label>
       <input
         type="text"

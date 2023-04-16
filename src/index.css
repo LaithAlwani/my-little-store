@@ -22,6 +22,6 @@ body {
   padding: 0;
   min-height: 100vh;
   margin-inline: auto;
-  background: url("bg-white.svg") ;
+  background: url("/images/bg-white.svg") ;
   
 }
