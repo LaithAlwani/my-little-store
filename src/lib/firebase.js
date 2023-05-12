@@ -44,9 +44,9 @@ export const storage = getStorage(firebaseApp);
 export const analytics = getAnalytics(firebaseApp);
 export const functions = getFunctions(firebaseApp);
 
-if (location.hostname === "localhost") {
-  connectStorageEmulator(storage, "localhost", 9199, { disableWarnings: false });
-  connectFirestoreEmulator(db, "localhost", 8080, { disableWarnings: false });
-  connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: false });
-  connectFunctionsEmulator(functions, "localhost", 5001, { disableWarnings: false });
-}
+// if (location.hostname === "localhost") {
+//   connectStorageEmulator(storage, "localhost", 9199, { disableWarnings: false });
+//   connectFirestoreEmulator(db, "localhost", 8080, { disableWarnings: false });
+//   connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: false });
+//   connectFunctionsEmulator(functions, "localhost", 5001, { disableWarnings: false });
+// }

@@ -1,15 +1,12 @@
 import { signOut } from "firebase/auth";
-import React, { useContext } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../lib/firebase";
 import { MdLogin, MdLogout, MdPostAdd } from "react-icons/md";
-import { FaUserCircle, FaStoreAlt } from "react-icons/fa";
-
-import { UserContext } from "../lib/context";
+import { FaUserCircle,  } from "react-icons/fa";
 
 export default function Navbar() {
-  const { user, storeId } = useContext(UserContext);
+  const  user  = auth.currentUser;
   const navigate = useNavigate();
   const logout = () => {
     signOut(auth)
@@ -42,8 +39,8 @@ export default function Navbar() {
           </Link>
           :
           <>
-            <Link to={storeId ? `${storeId}` : "create"} className="navLink">
-              <FaStoreAlt size={30}/>
+            <Link to="addgames" className="navLink">
+              <MdPostAdd size={32}/>
             </Link>
             <Link to="profile" className="navLink">
               {user.photoURL ? <img src={user.photoURL} alt="" className="avatar" /> : <FaUserCircle size={32}/>}
@@ -53,7 +50,6 @@ export default function Navbar() {
             </Link>
           </>
         }
-        
       </div>
     </nav>
   );

@@ -1,14 +1,13 @@
-import { deleteDoc, doc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { useContext, useState } from "react";
+import { doc, updateDoc } from "firebase/firestore";
+import {  useState } from "react";
 import { toast } from "react-hot-toast";
-import { UserContext } from "../lib/context";
-import { db } from "../lib/firebase";
+import { auth, db } from "../lib/firebase";
 import { MdInfo } from "react-icons/md";
 import RemoveBoardgame from "./RemoveBoardgame";
 import Ribbon from "./Ribbon";
 import Tag from "./Tag";
 
-export default function Boardgame({ storeId: currentStoreId, game }) {
+export default function Boardgame({ game }) {
   const {
     id,
     name,
@@ -23,7 +22,7 @@ export default function Boardgame({ storeId: currentStoreId, game }) {
     boxDamage,
     description,
   } = game;
-  const { user, storeId } = useContext(UserContext);
+  
   const [isOpen, setIsOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
@@ -36,15 +35,10 @@ export default function Boardgame({ storeId: currentStoreId, game }) {
   };
 
   const updateBoardgame = async (e, id, field) => {
-    const boardgameRef = doc(db, "stores", currentStoreId, "boardgames", id);
+    const boardgameRef = doc(db, "boardgames", id);
     const newValue = e.target.value;
     try {
       await updateDoc(boardgameRef, { [field]: newValue }, { merge: true });
-      await updateDoc(
-        doc(db, "stores", currentStoreId),
-        { updatedAt: serverTimestamp() },
-        { merge: true }
-      );
       toast.success(`${name} update ${field} to ${newValue}`);
       setIsOpen(!isOpen);
     } catch (err) {
@@ -72,7 +66,7 @@ export default function Boardgame({ storeId: currentStoreId, game }) {
       <div onClick={toggleModle}>
         <Ribbon status={status} isWanted={isWanted} price={price} />
       </div>
-      {user && storeId === currentStoreId && isOpen && (
+      {auth.currentUser && isOpen && (
         <div className="model">
           <select name="" id="" onChange={(e) => updateBoardgame(e, game.id, "status")}>
             <option value="">Choose Status</option>
@@ -87,7 +81,7 @@ export default function Boardgame({ storeId: currentStoreId, game }) {
             onBlur={(e) => updateBoardgame(e, game.id, "price")}
           />
           {(status === "sold" || isWanted) && (
-            <RemoveBoardgame id={game.id} storeId={currentStoreId} name={game.name} />
+            <RemoveBoardgame id={game.id} name={game.name} />
           )}
         </div>
       )}

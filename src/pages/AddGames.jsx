@@ -1,9 +1,8 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { doc, updateDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
-import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {  useState } from "react";
 import { toast } from "react-hot-toast";
-import { UserContext } from "../lib/context";
-import { db } from "../lib/firebase";
+import { auth, db } from "../lib/firebase";
 import Boardgame from "../components/Boardgame";
 import { XMLParser } from "fast-xml-parser";
 import Loader from "../components/Loader";
@@ -13,7 +12,6 @@ const options = {
 };
 
 export default function AddGames() {
-  const { user, storeId } = useContext(UserContext);
   const [price, setPrice] = useState("");
   const [bggLink, setBggLink] = useState("");
   const [boardgames, setBoardgames] = useState([]);
@@ -24,28 +22,23 @@ export default function AddGames() {
   const [missingPieces, setMissingPieces] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  const currentStoreId = location.pathname.split("/")[1];
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     boardgames.forEach((game) => {
-      addDoc(collection(db, "stores", currentStoreId, "boardgames"), game)
+      addDoc(collection(db, "boardgames"), {...game, createdAt:serverTimestamp()})
         .then(() => {
           toast.success(`${game.name} added!`);
-          navigate(`/${currentStoreId}`);
+          
+          navigate(`/`);
         })
         .catch((err) => {
           console.log(err);
           toast.error(err.message);
         });
     });
-    await updateDoc(
-      doc(db, "stores", currentStoreId),
-      { updatedAt: serverTimestamp() },
-      { merge: true }
-    );
     setBoardgames([]);
   };
 
@@ -63,8 +56,7 @@ export default function AddGames() {
           setBoardgames((prevState) => [
             ...prevState,
             {
-              storeId,
-              name: item.name[0]["@_value"].toLowerCase(),
+              name: item.name[0] ? item.name[0]["@_value"].toLowerCase() : item.name["@_value"].toLowerCase(),
               image: item.image,
               isExpansion: item["@_type"] === "boardgameexpansion",
               isWanted: iso,
@@ -86,7 +78,7 @@ export default function AddGames() {
       .catch((err) => console.log(err));
   };
 
-  return user && storeId === currentStoreId ? (
+  return auth.currentUser ? (
     <form onSubmit={getBggGameInfo} className="form-container">
       <h3>Just paste the boardgames' bgg url and set a price</h3>
       <label htmlFor="">

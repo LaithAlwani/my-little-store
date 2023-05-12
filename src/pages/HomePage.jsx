@@ -6,28 +6,23 @@ import {
   doc,
   getDoc,
   getDocs,
-  collectionGroup,
   where,
 } from "firebase/firestore";
-import { useContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { db } from "../lib/firebase";
-import Store from "../components/Store";
-import { BsHouseAddFill } from "react-icons/bs";
 import { MdOutlineSearch } from "react-icons/md";
-import { Link } from "react-router-dom";
-import { UserContext } from "../lib/context";
 import Loader from "../components/Loader";
+import Boardgame from "../components/Boardgame";
 
 export default function HomePage() {
-  const { user, storeId } = useContext(UserContext);
-  const [stores, setStores] = useState([]);
+  const [boardgames, setBoardGames] = useState([]);
   const [loading, setLoading] = useState([]);
   const [search, setSearch] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
 
-  const fetchStores = (col, callback) => {
+  const getBoardgames = (col, callback) => {
     setLoading(true);
-    const q = query(collection(db, col), orderBy("updatedAt", "desc"));
+    const q = query(collection(db, col), orderBy('status'), orderBy('createdAt', 'desc'));
     onSnapshot(q, (querySnapshot) => {
       callback([]);
       querySnapshot.forEach((doc) => {
@@ -37,33 +32,32 @@ export default function HomePage() {
     });
   };
 
-  const getBoardGameByName = async (search) => {
+  const getBoardgameByName = async (search) => {
     if (!search) {
-      return fetchStores("stores", setStores);
+      return getBoardgames("boardgames", setBoardGames);
     }
     setLoading(true);
-    const stores = query(collectionGroup(db, "boardgames"), where("name", ">=", search));
+    const stores = query(collection(db, "boardgames"), where("name", ">=", search));
     const querySnapshot = await getDocs(stores);
     if (!querySnapshot.empty) {
+      setBoardGames([]);
       return querySnapshot.forEach((docSnapshot) => {
-        setStores([]);
-        getDoc(doc(db, "stores", docSnapshot.data().storeId)).then((docRef) => {
-          setStores((prevState) => [...prevState, { id: docRef.id, ...docRef.data() }]);
-          setLoading(false);
-        });
+        setBoardGames((prevState) => [...prevState, { id: docSnapshot.id, ...docSnapshot.data() }]);
+        setLoading(false);
+        
       });
     } else {
       setLoading(false);
     }
-    return setStores([]);
+    return setBoardGames([]);
   };
 
   useEffect(() => {
     let unSubscribe;
-    if (stores.length !== 0) {
+    if (boardgames.length !== 0) {
       return;
     }
-    unSubscribe = fetchStores("stores", setStores);
+    unSubscribe = getBoardgames("boardgames", setBoardGames);
     return unSubscribe;
   }, []);
   return !loading ? (
@@ -75,22 +69,32 @@ export default function HomePage() {
           className={isSearching ? "search-bar searching" : "search-bar"}
           placeholder="search boardgame"
           onChange={(e) => setSearch(e.target.value)}
-          onBlur={() => getBoardGameByName(search)}
+          onBlur={() => getBoardgameByName(search)}
           value={search}
         />
       </div>
-      <div className="gamelist">
-        {!storeId && user && (
-          <Link to="create" className="bg-container">
-            <BsHouseAddFill size={64} />
-            <h3>Create Store</h3>
-          </Link>
-        )}
-        {stores.length > 0 ? (
-          stores.map((store) => <Store key={store.id} store={store} />)
-        ) : (
-          <h1>No Stores Found</h1>
-        )}
+      <div className="container">
+        { boardgames?.length > 0 ? (
+          <div className="gamelist">
+            {boardgames.filter(game=> !game.isWanted).map((game) => (
+              <Boardgame key={game.id} game={game} />
+            ))}
+          </div>
+        ) :
+        <h1>No baordgames found</h1>
+        }
+      </div>
+      <hr />
+      <div className="container">
+        { boardgames?.length > 0 ? (
+          <div className="gamelist">
+            {boardgames.filter(game=> game.isWanted).map((game) => (
+              <Boardgame key={game.id} game={game} />
+            ))}
+          </div>
+        ) :
+        <h1>No baordgames found</h1>
+        }
       </div>
     </div>
   ) : (
