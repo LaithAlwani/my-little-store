@@ -14,6 +14,8 @@ import { MdOutlineSearch } from "react-icons/md";
 import Loader from "../components/Loader";
 import Boardgame from "../components/Boardgame";
 import {DebounceInput} from 'react-debounce-input';
+import AddAdmin from "../components/AddAdmin";
+
 
 export default function HomePage() {
   const [boardgames, setBoardGames] = useState([]);
@@ -38,7 +40,7 @@ export default function HomePage() {
       return getBoardgames("boardgames", setBoardGames);
     }
     setLoading(true);
-    const stores = query(collection(db, "boardgames"), where("name", ">=", value));
+    const stores = query(collection(db, "boardgames"), where("name", ">=", value), where('name', '<=', search + '\uf8ff'));
     const querySnapshot = await getDocs(stores);
     if (!querySnapshot.empty) {
       setBoardGames([]);
@@ -67,6 +69,7 @@ export default function HomePage() {
   }, []);
   return !loading ? (
     <div className="container">
+      {/* <AddAdmin /> */}
       <div className="search-bar-container">
         <MdOutlineSearch size={32} onClick={() => setIsSearching(!isSearching)} />
         <DebounceInput

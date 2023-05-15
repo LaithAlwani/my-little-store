@@ -1,11 +1,12 @@
 import { doc, updateDoc } from "firebase/firestore";
-import {  useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { auth, db } from "../lib/firebase";
 import { MdInfo } from "react-icons/md";
 import RemoveBoardgame from "./RemoveBoardgame";
 import Ribbon from "./Ribbon";
 import Tag from "./Tag";
+import { UserContext } from "../lib/context";
 
 export default function Boardgame({ game }) {
   const {
@@ -22,7 +23,7 @@ export default function Boardgame({ game }) {
     boxDamage,
     description,
   } = game;
-  
+  const { user, isAdmin } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
@@ -51,7 +52,7 @@ export default function Boardgame({ game }) {
       <a href={bggLink} target="_blank" key={id} className="img-container">
         <img src={image} alt={name} className="bg-image" />
       </a>
-      <MdInfo size={24} className="bg-info" onClick={toggleInfoModel} />
+      {!game.isWanted && <MdInfo size={24} className="bg-info" onClick={toggleInfoModel} />}
       {isInfoOpen && (
         <div className="model">
           <div className="tags">
@@ -66,7 +67,7 @@ export default function Boardgame({ game }) {
       <div onClick={toggleModle}>
         <Ribbon status={status} isWanted={isWanted} price={price} />
       </div>
-      {auth.currentUser && isOpen && (
+      {user && isAdmin && isOpen && (
         <div className="model">
           <select name="" id="" onChange={(e) => updateBoardgame(e, game.id, "status")}>
             <option value="">Choose Status</option>
@@ -80,9 +81,7 @@ export default function Boardgame({ game }) {
             defaultValue={price}
             onBlur={(e) => updateBoardgame(e, game.id, "price")}
           />
-          {(status === "sold" || isWanted) && (
-            <RemoveBoardgame id={game.id} name={game.name} />
-          )}
+          {(status === "sold" || isWanted) && <RemoveBoardgame id={game.id} name={game.name} />}
         </div>
       )}
     </div>

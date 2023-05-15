@@ -286,7 +286,7 @@ button {
   margin-inline: auto;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 850px) {
   .gamelist {
     display: grid;
     gap: 1.5rem;

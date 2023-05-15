@@ -1,17 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import {  useState } from "react";
+import {  useContext, useState } from "react";
 import { toast } from "react-hot-toast";
-import { auth, db } from "../lib/firebase";
+import { db } from "../lib/firebase";
 import Boardgame from "../components/Boardgame";
 import { XMLParser } from "fast-xml-parser";
 import Loader from "../components/Loader";
+import { UserContext } from "../lib/context";
 
 const options = {
   ignoreAttributes: false,
 };
 
 export default function AddGames() {
+  const { isAdmin } = useContext(UserContext);
   const [price, setPrice] = useState("");
   const [bggLink, setBggLink] = useState("");
   const [boardgames, setBoardgames] = useState([]);
@@ -23,6 +25,7 @@ export default function AddGames() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   
+  console.log(isAdmin);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,7 +81,7 @@ export default function AddGames() {
       .catch((err) => console.log(err));
   };
 
-  return auth.currentUser ? (
+  return isAdmin ? (
     <form onSubmit={getBggGameInfo} className="form-container">
       <h3>Just paste the boardgames' bgg url and set a price</h3>
       <label htmlFor="">

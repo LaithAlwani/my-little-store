@@ -4,9 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../lib/firebase";
 import { MdLogin, MdLogout, MdPostAdd } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
+import { useContext } from "react";
+import { UserContext } from "../lib/context";
 
 export default function Navbar() {
-  const user = auth.currentUser;
+  const { user, isAdmin } = useContext(UserContext);
   const navigate = useNavigate();
   const logout = () => {
     signOut(auth)
@@ -33,18 +35,16 @@ export default function Navbar() {
       </div>
 
       <div className="links">
-        {user && (
+        {user && isAdmin && (
           <>
             <Link to="addgames" className="navLink">
               <MdPostAdd size={32} />
             </Link>
-            <Link to="profile" className="navLink">
-              {user.photoURL ? (
-                <img src={user.photoURL} alt="" className="avatar" />
-              ) : (
-                <FaUserCircle size={32} />
-              )}
-            </Link>
+            {user.photoURL ? (
+              <img src={user.photoURL} alt="" className="avatar" />
+            ) : (
+              <FaUserCircle size={32} />
+            )}
             <Link to="/" onClick={logout} className="navLink">
               <MdLogout size={32} />
             </Link>
