@@ -13,6 +13,7 @@ import { db } from "../lib/firebase";
 import { MdOutlineSearch } from "react-icons/md";
 import Loader from "../components/Loader";
 import Boardgame from "../components/Boardgame";
+import {DebounceInput} from 'react-debounce-input';
 
 export default function HomePage() {
   const [boardgames, setBoardGames] = useState([]);
@@ -32,12 +33,12 @@ export default function HomePage() {
     });
   };
 
-  const getBoardgameByName = async (search) => {
-    if (!search) {
+  const getBoardgameByName = async (value) => {
+    if (value.length < 3) {
       return getBoardgames("boardgames", setBoardGames);
     }
     setLoading(true);
-    const stores = query(collection(db, "boardgames"), where("name", ">=", search));
+    const stores = query(collection(db, "boardgames"), where("name", ">=", value));
     const querySnapshot = await getDocs(stores);
     if (!querySnapshot.empty) {
       setBoardGames([]);
@@ -53,6 +54,10 @@ export default function HomePage() {
   };
 
   useEffect(() => {
+    getBoardgameByName(search)
+  },[search])
+
+  useEffect(() => {
     let unSubscribe;
     if (boardgames.length !== 0) {
       return;
@@ -64,16 +69,18 @@ export default function HomePage() {
     <div className="container">
       <div className="search-bar-container">
         <MdOutlineSearch size={32} onClick={() => setIsSearching(!isSearching)} />
-        <input
+        <DebounceInput
+          minLength={3}
+          debounceTimeout={500}
           type="text"
           className={isSearching ? "search-bar searching" : "search-bar"}
-          placeholder="search boardgame"
+          placeholder="search boardgames"
           onChange={(e) => setSearch(e.target.value)}
-          onBlur={() => getBoardgameByName(search)}
           value={search}
         />
       </div>
       <div className="container">
+        <h2>FOR SALE</h2>
         { boardgames?.length > 0 ? (
           <div className="gamelist">
             {boardgames.filter(game=> !game.isWanted).map((game) => (
@@ -84,8 +91,9 @@ export default function HomePage() {
         <h1>No baordgames found</h1>
         }
       </div>
-      <hr />
+      
       <div className="container">
+        <h2>WANTED</h2>
         { boardgames?.length > 0 ? (
           <div className="gamelist">
             {boardgames.filter(game=> game.isWanted).map((game) => (
