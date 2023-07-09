@@ -4,6 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
+    "target":"boardgames",
     "public": "dist",
     "ignore": [
       "firebase.json",

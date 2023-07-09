@@ -3,10 +3,9 @@ import { MdDeleteOutline } from "react-icons/md";
 import { db } from "../lib/firebase";
 import { toast } from "react-hot-toast";
 
-export default function RemoveBoardgame({ id, storeId, name }) {
+export default function RemoveBoardgame({ id, name }) {
   const deleteBoardgame = async () => {
-    console.log("working");
-    const boardgameRef = doc(db, "stores", storeId, "boardgames", id);
+    const boardgameRef = doc(db, "boardgames", id);
     try {
       await deleteDoc(boardgameRef);
       toast.success(name + " deleted");
@@ -16,8 +15,8 @@ export default function RemoveBoardgame({ id, storeId, name }) {
   };
 
   return (
-    <button className="deleteBtn">
-      <MdDeleteOutline color="white" size={24} onClick={deleteBoardgame} />
+    <button className="deleteBtn" onClick={deleteBoardgame}>
+      <MdDeleteOutline color="white" size={24} />
     </button>
   );
 }

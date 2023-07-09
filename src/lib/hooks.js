@@ -22,7 +22,7 @@ export const useUserData = () => {
             setLoading(false);
           })
           .catch((err) => {
-            console.log(err.message);
+            return (err.message);
           });
       } else {
         setUser(null);

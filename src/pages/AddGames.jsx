@@ -24,8 +24,6 @@ export default function AddGames() {
   const [missingPieces, setMissingPieces] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  
-  console.log(isAdmin);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,10 +54,12 @@ export default function AddGames() {
           items: { item },
         } = parser.parse(data);
         if (item) {
+          console.log(item);
           setBoardgames((prevState) => [
             ...prevState,
             {
               name: item.name[0] ? item.name[0]["@_value"].toLowerCase() : item.name["@_value"].toLowerCase(),
+              thumbnail: item.thumbnail,
               image: item.image,
               isExpansion: item["@_type"] === "boardgameexpansion",
               isWanted: iso,
@@ -78,7 +78,7 @@ export default function AddGames() {
           toast.error("please try again");
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toast.error(err.message));
   };
 
   return isAdmin ? (

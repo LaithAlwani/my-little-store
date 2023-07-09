@@ -11,8 +11,9 @@ import { UserContext } from "../lib/context";
 export default function Boardgame({ game }) {
   const {
     id,
-    name,
+    title,
     price,
+    thumbnail,
     image,
     status,
     bggLink,
@@ -40,7 +41,7 @@ export default function Boardgame({ game }) {
     const newValue = e.target.value;
     try {
       await updateDoc(boardgameRef, { [field]: newValue }, { merge: true });
-      toast.success(`${name} update ${field} to ${newValue}`);
+      toast.success(`${title} update ${field} to ${newValue}`);
       setIsOpen(!isOpen);
     } catch (err) {
       toast.error(err.message);
@@ -50,7 +51,7 @@ export default function Boardgame({ game }) {
   return (
     <div className="bg-container">
       <a href={bggLink} target="_blank" key={id} className="img-container">
-        <img src={image} alt={name} className="bg-image" />
+        <img src={thumbnail} alt={title} className="bg-image" />
       </a>
       {!game.isWanted && <MdInfo size={24} className="bg-info" onClick={toggleInfoModel} />}
       {isInfoOpen && (

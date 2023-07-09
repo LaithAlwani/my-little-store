@@ -16,7 +16,6 @@ exports.addAdmin = functions
     // if (context.auth.token.admin !== true) {
     //   return { error: "Request not Authorized" };
     // }
-    console.log(data.email);
     const email = data.email;
     return grantAdminRole(email);
     
