@@ -10,6 +10,10 @@
   padding: 0;
 }
 
+h1,h2, h3{
+  margin-block-end: 1rem;
+}
+
 a {
   font-weight: 500;
   color: #333;
