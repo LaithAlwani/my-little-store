@@ -77,7 +77,7 @@ button {
 .container {
   max-width: 68rem;
   margin-inline: auto;
-
+  margin-block-end: 2rem;
   text-align: center;
 }
 
