@@ -75,7 +75,7 @@ button {
   padding-inline: 0.5rem;
 }
 .container {
-  max-width: 67rem;
+  max-width: 68rem;
   margin-inline: auto;
   padding: 1rem;
   text-align: center;
@@ -128,7 +128,6 @@ button {
   flex-wrap: wrap;
   padding: 1rem;
   justify-content: center;
-  align-items: flex-start;
   row-gap: 2rem;
   column-gap: 2rem;
 }
@@ -162,9 +161,8 @@ button {
   box-shadow: 2px 2px 20px #9f9f9f;
 }
 
-.bg-container p {
-  margin-block: 0.25rem;
-  font-size: 1rem;
+.bg-container h3 {
+  text-transform:capitalize ;
 }
 
 .img-container {

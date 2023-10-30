@@ -54,7 +54,8 @@ export default function AddGames() {
           items: { item },
         } = parser.parse(data);
         if (item) {
-          console.log(item);
+          const exp = item.link.filter(link => link["@_type"] === 'boardgameexpansion')
+          console.log(exp)
           setBoardgames((prevState) => [
             ...prevState,
             {
