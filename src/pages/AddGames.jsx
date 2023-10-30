@@ -65,6 +65,7 @@ export default function AddGames() {
               isExpansion: item["@_type"] === "boardgameexpansion",
               isWanted: iso,
               bggLink,
+              bggId:id,
               price,
               status: "available",
               condition: condition,
