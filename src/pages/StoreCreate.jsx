@@ -1,6 +1,6 @@
 import { Timestamp, addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useState } from "react";
-import { db } from "../lib/firebase";
+import { auth, db } from "../lib/firebase";
 
 const StoreCreate = () => {
   const [storeName, setStoreName] = useState("");
@@ -9,6 +9,7 @@ const StoreCreate = () => {
     e.preventDefault();
     const newStore = {
       storeName, 
+      userId: auth.currentUser.uid,
       views: 0,
       numGames: 0,
       created_at: serverTimestamp(),
