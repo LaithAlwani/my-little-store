@@ -185,7 +185,7 @@ button {
   position: absolute;
   top: 0;
   left: 0;
-  transform: translate(-29.29%, -110%) rotate(-45deg); /* 29.29% = 100%*(1 - cos(45deg)) */
+  transform: translate(-29.29%, -100%) rotate(-45deg); /* 29.29% = 100%*(1 - cos(45deg)) */
   color: #fff;
   text-align: center;
   width: 100px;
