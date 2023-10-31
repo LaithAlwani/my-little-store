@@ -28,11 +28,11 @@ export default function Navbar() {
           alt="dice"
           className="logo"
         />
+        <div>
+          <h3>My Little Shop!</h3>
+          <span className="muted">Prices are negotiable</span>
+        </div>
       </Link>
-      <div>
-        <h3>My Little Shop!</h3>
-        <span className="muted">Prices are negotiable</span>
-      </div>
 
       <div className="links">
         {user && isAdmin && (

@@ -23,7 +23,7 @@ export default function Boardgame({ game }) {
     boxDamage,
     description,
   } = game;
-  console.log(name);
+
   const { user, isAdmin } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);

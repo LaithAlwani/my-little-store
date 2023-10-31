@@ -8,6 +8,11 @@ nav {
 nav h3 {
   margin: 0;
 }
+nav a {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+}
 .avatar {
   width: 32px;
   height: 32px;
@@ -162,7 +167,7 @@ button {
 }
 
 .bg-container h3 {
-  text-transform:capitalize ;
+  text-transform: capitalize;
 }
 
 .img-container {
