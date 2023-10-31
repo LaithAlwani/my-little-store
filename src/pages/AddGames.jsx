@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import {  useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { db } from "../lib/firebase";
 import Boardgame from "../components/Boardgame";
@@ -13,7 +13,7 @@ const options = {
 };
 
 export default function AddGames() {
-  const { isAdmin } = useContext(UserContext);
+  const { isAdmin, isLoading } = useContext(UserContext);
   const [price, setPrice] = useState("");
   const [bggLink, setBggLink] = useState("");
   const [boardgames, setBoardgames] = useState([]);
@@ -29,10 +29,10 @@ export default function AddGames() {
     e.preventDefault();
     setLoading(true);
     boardgames.forEach((game) => {
-      addDoc(collection(db, "boardgames"), {...game, createdAt:serverTimestamp()})
+      addDoc(collection(db, "boardgames"), { ...game, createdAt: serverTimestamp() })
         .then(() => {
           toast.success(`${game.name} added!`);
-          
+
           navigate(`/`);
         })
         .catch((err) => {
@@ -58,13 +58,15 @@ export default function AddGames() {
           setBoardgames((prevState) => [
             ...prevState,
             {
-              name: item.name[0] ? item.name[0]["@_value"].toLowerCase() : item.name["@_value"].toLowerCase(),
+              name: item.name[0]
+                ? item.name[0]["@_value"].toLowerCase()
+                : item.name["@_value"].toLowerCase(),
               thumbnail: item.thumbnail,
               image: item.image,
               isExpansion: item["@_type"] === "boardgameexpansion",
               isWanted: iso,
               bggLink,
-              bggId:id,
+              bggId: id,
               price,
               status: "available",
               condition: condition,
@@ -82,7 +84,11 @@ export default function AddGames() {
       .catch((err) => toast.error(err.message));
   };
 
-  return isAdmin ? (
+  return isLoading ? (
+    <div className="loader-container">
+      <Loader />
+    </div>
+  ) : isAdmin ? (
     <form onSubmit={getBggGameInfo} className="form-container">
       <h3>Just paste the boardgames' bgg url and set a price</h3>
       <label htmlFor="">

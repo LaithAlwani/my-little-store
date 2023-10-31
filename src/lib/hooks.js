@@ -6,7 +6,7 @@ export const useUserData = () => {
   const [user, setUser] = useState(null);
   const [userAvatar, setUserAvatar] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -30,5 +30,5 @@ export const useUserData = () => {
       }
     });
   }, [user]);
-  return { user, userAvatar, isAdmin, loading };
+  return { user, userAvatar, isAdmin, isLoading };
 };
