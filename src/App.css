@@ -27,6 +27,7 @@ input {
   border: none;
   border-radius: 0.5rem;
   margin-block: 1rem;
+  background-color: #fff;
 }
 input[type="checkbox"] {
   width: inherit;
@@ -116,9 +117,6 @@ button {
   width: 100%;
   border-bottom: 1px solid #666;
 }
-.searching:focus,
-.searching:active {
-}
 
 .flex {
   display: flex;
@@ -161,7 +159,6 @@ button {
   align-items: center;
   background: rgba(214, 214, 214, 0.762);
   border: 1px solid rgb(150, 150, 150);
-
   border-radius: 0.5rem;
   box-shadow: 2px 2px 20px #9f9f9f;
 }
