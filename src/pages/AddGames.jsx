@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -14,6 +14,7 @@ const options = {
 
 export default function AddGames() {
   const { isAdmin, isLoading } = useContext(UserContext);
+  const { storeId } = useParams();
   const [price, setPrice] = useState("");
   const [bggLink, setBggLink] = useState("");
   const [boardgames, setBoardgames] = useState([]);
@@ -29,10 +30,12 @@ export default function AddGames() {
     e.preventDefault();
     setLoading(true);
     boardgames.forEach((game) => {
-      addDoc(collection(db, "boardgames"), { ...game, createdAt: serverTimestamp() })
+      addDoc(collection(db, "stores", storeId, "boardgames"), {
+        ...game,
+        createdAt: serverTimestamp(),
+      })
         .then(() => {
           toast.success(`${game.name} added!`);
-
           navigate(`/`);
         })
         .catch((err) => {
@@ -88,7 +91,7 @@ export default function AddGames() {
     <div className="loader-container">
       <Loader />
     </div>
-  ) : isAdmin ? (
+  ) : (
     <form onSubmit={getBggGameInfo} className="form-container">
       <h3>Just paste the boardgames' bgg url and set a price</h3>
       <label htmlFor="">
@@ -154,9 +157,5 @@ export default function AddGames() {
         </button>
       )}
     </form>
-  ) : (
-    <div className="container">
-      <h1>Unauthorized</h1>
-    </div>
   );
 }
