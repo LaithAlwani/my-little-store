@@ -21,7 +21,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/store/create" element={<StoreCreate />} />
           <Route path="/store/:storeId" element={<StoreFront />} />
-          <Route path="addgames" element={<AddGames />} />
+          <Route path="/store/:storeId/add" element={<AddGames />} />
           <Route path="login" element={<Login />} />
         </Routes>
       </Router>

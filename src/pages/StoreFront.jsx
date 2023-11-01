@@ -1,11 +1,27 @@
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import {
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  addDoc,
+  doc,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
 import { db } from "../lib/firebase";
 import { MdOutlineSearch } from "react-icons/md";
 import Loader from "../components/Loader";
 import Boardgame from "../components/Boardgame";
+import { Link, useParams } from "react-router-dom";
+import { UserContext } from "../lib/context";
+import { MdPostAdd } from "react-icons/md";
+import toast from "react-hot-toast";
 
 export default function StoreFront() {
+  const { storeId } = useParams();
+  const { user } = useContext(UserContext);
+  const [tempgames, setTempgames] = useState([]);
   const [boardgames, setBoardgames] = useState([]);
   const [wantedBoardgames, setWantedBoardgames] = useState([]);
   const [loading, setLoading] = useState([]);
@@ -15,15 +31,17 @@ export default function StoreFront() {
   const getBoardgames = () => {
     setLoading(true);
     const q = query(
-      collection(db, "boardgames"),
+      collection(db, "stores", storeId, "boardgames"),
       orderBy("isWanted"),
       orderBy("status"),
       orderBy("createdAt", "desc")
     );
     onSnapshot(q, (querySnapshot) => {
+      setTempgames([]);
       setBoardgames([]);
       setWantedBoardgames([]);
       querySnapshot.forEach((doc) => {
+        setTempgames((prevState) => [...prevState, { ...doc.data() }]);
         if (!doc.data().isWanted) {
           setBoardgames((prevState) => [...prevState, { id: doc.id, ...doc.data() }]);
         } else {
@@ -32,6 +50,10 @@ export default function StoreFront() {
       });
       setLoading(false);
     });
+  };
+
+  const isStoreOwner = () => {
+    return user.uid === storeId;
   };
 
   useEffect(() => {
@@ -43,9 +65,23 @@ export default function StoreFront() {
     return unSubscribe;
   }, []);
 
+  const copy = () => {
+    tempgames.forEach((game) => {
+      updateDoc(doc(db, "stores", user.uid), { boardgames: arrayUnion(game) }).then(
+        toast.success(game.name + " has been copied")
+      );
+    });
+  };
+
   return !loading ? (
     <div className="container">
+      <button onClick={copy}>copy games</button>
       <div className="search-bar-container">
+        {isStoreOwner() && (
+          <Link to="add" className="navLink">
+            <MdPostAdd size={32} />
+          </Link>
+        )}
         <MdOutlineSearch size={32} onClick={() => setIsSearching(!isSearching)} />
         <input
           type="text"

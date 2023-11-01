@@ -10,7 +10,7 @@ export default function Login() {
     try {
       const { user } = await signInWithPopup(auth, provider);
       toast.success("Welcome " + user.displayName);
-      navigate("/");
+      navigate(`/store/${user.uid}`);
     } catch (error) {
       // Handle Errors here.
       const errorCode = error.code;

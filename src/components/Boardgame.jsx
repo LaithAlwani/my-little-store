@@ -6,6 +6,7 @@ import RemoveBoardgame from "./RemoveBoardgame";
 import Ribbon from "./Ribbon";
 import Tag from "./Tag";
 import { UserContext } from "../lib/context";
+import { useParams } from "react-router-dom";
 
 export default function Boardgame({ game }) {
   const {
@@ -23,7 +24,7 @@ export default function Boardgame({ game }) {
     boxDamage,
     description,
   } = game;
-
+  const { storeId } = useParams();
   const { user, isAdmin } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
@@ -34,7 +35,7 @@ export default function Boardgame({ game }) {
   };
 
   const updateBoardgame = async (e, id, field) => {
-    const boardgameRef = doc(db, "boardgames", id);
+    const boardgameRef = doc(db,"stores", storeId, "boardgames", id);
     const newValue = e.target.value;
     try {
       await updateDoc(boardgameRef, { [field]: newValue }, { merge: true });
