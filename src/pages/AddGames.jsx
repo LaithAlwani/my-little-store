@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { addDoc, doc, collection, serverTimestamp, updateDoc } from "firebase/firestore";
 import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { db } from "../lib/firebase";
@@ -35,8 +35,14 @@ export default function AddGames() {
         createdAt: serverTimestamp(),
       })
         .then(() => {
-          toast.success(`${game.name} added!`);
-          navigate(`/`);
+          updateDoc(
+            doc(db, "stores", storeId),
+            { updated_at: serverTimestamp(), last_updated: serverTimestamp() },
+            { merge: true }
+          ).then(() => {
+            toast.success(`${game.name} added!`);
+            navigate(`/`);
+          });
         })
         .catch((err) => {
           console.log(err);

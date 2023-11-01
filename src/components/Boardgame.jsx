@@ -1,4 +1,4 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { db } from "../lib/firebase";
@@ -35,10 +35,14 @@ export default function Boardgame({ game }) {
   };
 
   const updateBoardgame = async (e, id, field) => {
-    const boardgameRef = doc(db,"stores", storeId, "boardgames", id);
+    const boardgameRef = doc(db, "stores", storeId, "boardgames", id);
     const newValue = e.target.value;
     try {
       await updateDoc(boardgameRef, { [field]: newValue }, { merge: true });
+      await updateDoc(doc(db, "stores", storeId), {
+        last_updated: serverTimestamp(),
+        updated_at: serverTimestamp(),
+      });
       toast.success(`${name} update ${field} to ${newValue}`);
       setIsOpen(!isOpen);
     } catch (err) {

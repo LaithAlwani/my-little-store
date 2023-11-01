@@ -18,6 +18,7 @@ import { UserContext } from "../lib/context";
 import { MdPostAdd } from "react-icons/md";
 import toast from "react-hot-toast";
 
+
 export default function StoreFront() {
   const { storeId } = useParams();
   const { user } = useContext(UserContext);
@@ -53,7 +54,7 @@ export default function StoreFront() {
   };
 
   const isStoreOwner = () => {
-    return user.uid === storeId;
+    return user?.uid === storeId;
   };
 
   useEffect(() => {
@@ -101,7 +102,7 @@ export default function StoreFront() {
               ))}
           </div>
         ) : (
-          <h1>No baordgames found</h1>
+          <h1>No baordgames for Sale</h1>
         )}
       </div>
       <div className="container">
@@ -114,7 +115,7 @@ export default function StoreFront() {
               ))}
           </div>
         ) : (
-          <h1>No baordgames found</h1>
+          <h1>Not looking to Trade</h1>
         )}
       </div>
     </div>

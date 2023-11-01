@@ -26,11 +26,13 @@ exports.newUserOnSignup = functions
           .collection("stores")
           .doc(user.uid)
           .set({
-            storeName: user.displayName.replace(" ","").toLowerCase(),
+            name: user.displayName.replace(" ", "").toLowerCase(),
+            avatar:user.photoURL,
             views: 0,
             numGames: 0,
             created_at: admin.firestore.Timestamp.now(),
             updated_at: null,
+            last_updated:admin.firestore.Timestamp.now()
           });
       });
     return user;
