@@ -48,7 +48,7 @@ export default function StoreFront() {
         } else {
           setWantedBoardgames((prevState) => [...prevState, { id: doc.id, ...doc.data() }]);
         }
-      });
+      })
       setLoading(false);
     });
   };

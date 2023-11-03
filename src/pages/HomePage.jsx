@@ -31,15 +31,15 @@ const HomePage = () => {
   return loading ? (
     <Loader />
   ) : (
-    <section>
+    <section className="container flex">
       {stores.length > 0 ? (
         stores.map((store) => (
           <Link to={`store/${store.id}`} key={store.id} className="bg-container">
             <h1>{store.name}</h1>
             <span>
               {store["updated_at"]
-                ? "update " + dayjs(store["updated_at"].toDate()).fromNow()
-                : "created " + dayjs(store["created_at"].toDate()).fromNow()}
+                ? "update " + dayjs(store["updated_at"]?.toDate()).fromNow()
+                : "created " + dayjs(store["created_at"]?.toDate()).fromNow()}
             </span>
           </Link>
         ))

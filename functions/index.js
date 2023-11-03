@@ -24,9 +24,10 @@ exports.newUserOnSignup = functions
         admin
           .firestore()
           .collection("stores")
-          .doc(user.uid)
+          .doc()
           .set({
             name: user.displayName.replace(" ", "").toLowerCase(),
+            email:user.email,
             avatar:user.photoURL,
             views: 0,
             numGames: 0,
