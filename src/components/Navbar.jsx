@@ -31,8 +31,8 @@ export default function Navbar() {
           className="logo"
         />
         <div>
-          <h3>Ottawa/Gatinue Boardgame Market</h3>
-          <span className="muted">List boardgames for sale!</span>
+          <h3>Boardgame Stop</h3>
+          <span className="muted">Ottawa/Gatinue Boardgame Market</span>
         </div>
       </Link>
 
