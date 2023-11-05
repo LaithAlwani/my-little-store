@@ -62,8 +62,8 @@ const HomePage = () => {
             onClick={() => handleClick(store.id)}>
             <img src={store.avatar} alt=""  className="store-avatar"/>
             <div className="store-img-container">
-              {store.boardgamesSale? store.boardgamesSale?.sort((a,b)=> a.name > b.name ? 1:-1).map((game) => (
-                <img src={game.thumbnail} />
+              {store.boardgamesSale? store?.boardgamesSale?.sort((a,b)=> a.name > b.name ? 1:-1).map((game) => (
+                <img key={game.bggId} src={game.thumbnail} />
               )):<h2>This store is Empty</h2>}
             </div>
             <h1>{store.name}</h1>
