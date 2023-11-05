@@ -1,12 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AddGames from "./pages/AddGames";
-import HomePage from "./pages/HomePage";
+import StoreFront from "./pages/StoreFront";
 import { Toaster } from "react-hot-toast";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import { useUserData } from "./lib/hooks";
 import { UserContext } from "./lib/context";
 import "./App.css";
+import HomePage from "./pages/HomePage";
+import StoreCreate from "./pages/StoreCreate";
 
 function App() {
   const userData = useUserData();
@@ -16,8 +18,10 @@ function App() {
         <Toaster />
         <Navbar />
         <Routes>
-          <Route path="" element={<HomePage />} />
-          <Route path="addgames" element={<AddGames />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/stores/create" element={<StoreCreate />} />
+          <Route path="/stores/:storeId" element={<StoreFront />} />
+          <Route path="/stores/:storeId/add" element={<AddGames />} />
           <Route path="login" element={<Login />} />
         </Routes>
       </Router>

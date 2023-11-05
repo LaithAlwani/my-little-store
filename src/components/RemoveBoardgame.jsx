@@ -1,14 +1,20 @@
-import { deleteDoc, doc } from "firebase/firestore";
+import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { MdDeleteOutline } from "react-icons/md";
 import { db } from "../lib/firebase";
 import { toast } from "react-hot-toast";
+import { useParams } from "react-router-dom";
 
-export default function RemoveBoardgame({ id, name }) {
+export default function RemoveBoardgame({ game }) {
+  const { storeId } = useParams();
   const deleteBoardgame = async () => {
-    const boardgameRef = doc(db, "boardgames", id);
+    const storeRef = doc(db, "stores", storeId);
     try {
-      await deleteDoc(boardgameRef);
-      toast.success(name + " deleted");
+      if (game.isWanted) {
+        await updateDoc(storeRef, { boardgamesWanted: arrayRemove(game) });
+      } else {
+        await updateDoc(storeRef, { boardgamesSale: arrayRemove(game) });
+      }
+      toast.success(game.name + " deleted");
     } catch (err) {
       toast.error(err.message);
     }

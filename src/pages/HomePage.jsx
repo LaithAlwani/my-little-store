@@ -1,88 +1,87 @@
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { db } from "../lib/firebase";
-import { MdOutlineSearch } from "react-icons/md";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  updateDoc,
+  doc,
+  increment,
+} from "firebase/firestore";
 import Loader from "../components/Loader";
-import Boardgame from "../components/Boardgame";
+import { db } from "../lib/firebase";
+import { Link } from "react-router-dom";
+import * as dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import toast from "react-hot-toast";
+import { MdRemoveRedEye } from "react-icons/md";
+import { UserContext } from "../lib/context";
+dayjs.extend(relativeTime);
 
-export default function HomePage() {
-  const [boardgames, setBoardgames] = useState([]);
-  const [wantedBoardgames, setWantedBoardgames] = useState([]);
-  const [loading, setLoading] = useState([]);
-  const [search, setSearch] = useState([]);
-  const [isSearching, setIsSearching] = useState(false);
+const HomePage = () => {
+  const { user, userStoreId } = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
+  const [stores, setStores] = useState([]);
 
-  const getBoardgames = () => {
+  const getStores = () => {
     setLoading(true);
-    const q = query(
-      collection(db, "boardgames"),
-      orderBy("isWanted"),
-      orderBy("status"),
-      orderBy("createdAt", "desc")
-    );
+    const q = query(collection(db, "stores"), orderBy("last_updated", "desc"));
     onSnapshot(q, (querySnapshot) => {
-      setBoardgames([]);
-      setWantedBoardgames([]);
-      querySnapshot.forEach((doc) => {
-        if (!doc.data().isWanted) {
-          setBoardgames((prevState) => [...prevState, { id: doc.id, ...doc.data() }]);
-        } else {
-          setWantedBoardgames((prevState) => [...prevState, { id: doc.id, ...doc.data() }]);
-        }
-      });
+      if (!querySnapshot.empty) {
+        setStores([]);
+        querySnapshot.forEach((doc) => {
+          setStores((prevState) => [...prevState, { id: doc.id, ...doc.data() }]);
+        });
+      }
       setLoading(false);
     });
   };
 
+  const handleClick = (storeId) => {
+    if (userStoreId != storeId)
+      updateDoc(doc(db, "stores", storeId), { views: increment(1) }, { merge: true }).catch((err) =>
+        toast.error(err.message)
+      );
+  };
+
   useEffect(() => {
-    let unSubscribe;
-    if (boardgames.length !== 0) {
-      return;
-    }
-    unSubscribe = getBoardgames();
-    return unSubscribe;
+    if (stores.length != 0) return;
+    getStores();
   }, []);
 
-  return !loading ? (
-    <div className="container">
-      <div className="search-bar-container">
-        <MdOutlineSearch size={32} onClick={() => setIsSearching(!isSearching)} />
-        <input
-          type="text"
-          className={isSearching ? "search-bar searching" : "search-bar"}
-          placeholder="search boardgames"
-          onChange={(e) => setSearch(e.target.value)}
-          value={search}
-        />
-      </div>
-      <div className="container">
-        {boardgames?.length > 0 ? (
-          <div className="gamelist">
-            {boardgames
-              .filter((game) => (search === "" ? game : game.name.includes(search)))
-              .map((game) => (
-                <Boardgame key={game.id} game={game} />
-              ))}
-          </div>
-        ) : (
-          <h1>No baordgames found</h1>
-        )}
-      </div>
-      <div className="container">
-        {wantedBoardgames?.length > 0 ? (
-          <div className="gamelist">
-            {wantedBoardgames
-              .filter((game) => (search === "" ? game : game.name.includes(search)))
-              .map((game) => (
-                <Boardgame key={game.id} game={game} />
-              ))}
-          </div>
-        ) : (
-          <h1>No baordgames found</h1>
-        )}
-      </div>
-    </div>
-  ) : (
+  return loading ? (
     <Loader />
+  ) : (
+    <section className="container flex">
+      {stores.length > 0 ? (
+        stores.map((store) => (
+          <Link
+            to={`stores/${store.id}`}
+            key={store.id}
+            className={`store-container ${(!store.boardgamesSale && !store.boardgameWanted )?"disabled-link":""}`}
+            onClick={() => handleClick(store.id)}>
+            <img src={store.avatar} alt=""  className="store-avatar"/>
+            <div className="store-img-container">
+              {store.boardgamesSale? store.boardgamesSale?.sort((a,b)=> a.name > b.name ? 1:-1).map((game) => (
+                <img src={game.thumbnail} />
+              )):<h2>This store is Empty</h2>}
+            </div>
+            <h1>{store.name}</h1>
+            <span>
+              <MdRemoveRedEye /> {store.views}
+            </span>
+            <span>
+              {store["updated_at"]
+                ? "update " + dayjs(store["updated_at"]?.toDate()).fromNow()
+                : "created " + dayjs(store["created_at"]?.toDate()).fromNow()}
+            </span>
+          </Link>
+        ))
+      ) : (
+        <h1>No Stores...</h1>
+      )}
+    </section>
   );
-}
+};
+
+export default HomePage;
