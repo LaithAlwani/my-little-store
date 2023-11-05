@@ -4,12 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../lib/firebase";
 import { MdLogin, MdLogout, MdStore } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
-import { useContext, useEffect } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../lib/context";
 
 export default function Navbar() {
   const { user, userStoreId } = useContext(UserContext);
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
   const logout = () => {
     signOut(auth)
       .then(() => {
@@ -20,7 +21,7 @@ export default function Navbar() {
         toast.error(err.message);
       });
   };
- 
+
   return (
     <nav>
       <Link to="/" className="navLink">
@@ -35,27 +36,44 @@ export default function Navbar() {
         </div>
       </Link>
 
-      <div className="links">
-        {user ? (
-          <>
-            <Link to={`/stores/${userStoreId}`}>
-              <MdStore size={32} />
-            </Link>
-            {user.photoURL ? (
-              <img src={user.photoURL} alt="" className="avatar" />
-            ) : (
-              <FaUserCircle size={32} />
-            )}
-            <Link to="/" onClick={logout} className="navLink">
-              <MdLogout size={32} />
-            </Link>
-          </>
-        ) : (
-          <Link to="login" className="navLink">
-            <MdLogin size={32} />
+      {user ? (
+        <div className="links">
+          <Link to={`/stores/${userStoreId}`}>
+            <MdStore size={32} />
           </Link>
-        )}
-      </div>
+          {user?.photoURL ? (
+            <img src={user.photoURL} alt="" className="avatar" />
+          ) : (
+            <FaUserCircle size={32} />
+          )}
+          <Link to="/" onClick={logout} className="navLink">
+            <MdLogout size={32} />
+          </Link>
+        </div>
+      ) : (
+        <Link to="login" className="navLink" style={{marginLeft:"auto"}}>
+          <MdLogin size={32} />
+        </Link>
+      )}
+      {user && (
+        <div className="mobile-links" onClick={() => setIsOpen(!isOpen)}>
+          {user?.photoURL ? (
+            <img src={user.photoURL} alt="" className="avatar" />
+          ) : (
+            <FaUserCircle size={32} />
+          )}
+          {isOpen && (
+            <div className="mobile-menu">
+              <Link to={`/stores/${userStoreId}`}>
+                <MdStore size={32} /> My Store
+              </Link>
+              <Link to="/" onClick={logout} className="navLink">
+                <MdLogout size={32} /> Logout
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
     </nav>
   );
 }
