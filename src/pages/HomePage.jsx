@@ -11,12 +11,10 @@ import {
 import Loader from "../components/Loader";
 import { db } from "../lib/firebase";
 import { Link } from "react-router-dom";
-import * as dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import moment from "moment";
 import toast from "react-hot-toast";
 import { MdRemoveRedEye } from "react-icons/md";
 import { UserContext } from "../lib/context";
-dayjs.extend(relativeTime);
 
 const HomePage = () => {
   const { user, userStoreId } = useContext(UserContext);
@@ -58,13 +56,19 @@ const HomePage = () => {
           <Link
             to={`stores/${store.id}`}
             key={store.id}
-            className={`store-container ${(!store.boardgamesSale && !store.boardgameWanted )?"disabled-link":""}`}
+            className={`store-container ${
+              !store.boardgamesSale && !store.boardgameWanted ? "disabled-link" : ""
+            }`}
             onClick={() => handleClick(store.id)}>
-            <img src={store.avatar} alt=""  className="store-avatar"/>
+            <img src={store.avatar} alt="" className="store-avatar" />
             <div className="store-img-container">
-              {store.boardgamesSale? store?.boardgamesSale?.sort((a,b)=> a.name > b.name ? 1:-1).map((game) => (
-                <img key={game.bggId} src={game.thumbnail} />
-              )):<h2>This store is Empty</h2>}
+              {store.boardgamesSale ? (
+                store.boardgamesSale
+                  ?.sort((a, b) => (a.name > b.name ? 1 : -1))
+                  .map((game) => <img key={game.bggId} src={game.thumbnail} />)
+              ) : (
+                <h2>This store is Empty</h2>
+              )}
             </div>
             <h1>{store.name}</h1>
             <span>
@@ -72,8 +76,8 @@ const HomePage = () => {
             </span>
             <span>
               {store["updated_at"]
-                ? "update " + dayjs(store["updated_at"]?.toDate()).fromNow()
-                : "created " + dayjs(store["created_at"]?.toDate()).fromNow()}
+                ? "update " + moment(store["updated_at"]?.toDate()).fromNow()
+                : "created " + moment(store["created_at"]?.toDate()).fromNow()}
             </span>
           </Link>
         ))
