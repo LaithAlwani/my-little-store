@@ -41,13 +41,18 @@ label {
 button {
   padding: 0.5rem;
   width: 100%;
+  max-width: 400px;
   border: none;
-  border-radius: 0.5rem;
-  background-color: #666;
+  border-radius: 1rem;
+  background-color: #333;
   color: white;
   font-weight: bold;
   margin-block: 0.5rem;
-  line-height: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-inline: auto;
 }
 
 .btn-sm {

@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../lib/firebase";
 import { doc, getDoc, serverTimestamp, addDoc, collection, setDoc } from "firebase/firestore";
+import {FcGoogle} from "react-icons/fc"
 
 export default function Login() {
   const navigate = useNavigate();
@@ -67,8 +68,7 @@ export default function Login() {
 
   return (
     <div className="container">
-      <button onClick={logInWithGoogle}>Login with Google</button>
-      <h2>Only The first time you login, your store will be created and you will be logged out</h2>
+      <button onClick={logInWithGoogle}><FcGoogle size={24} /> Login</button>
     </div>
   );
 }

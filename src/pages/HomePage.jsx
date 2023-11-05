@@ -52,7 +52,7 @@ const HomePage = () => {
   ) : (
     <section className="container flex">
       {stores.length > 0 ? (
-        stores.map((store) => (
+        stores.filter((store) => userStoreId != store.id).map((store) => (
           <Link
             to={`stores/${store.id}`}
             key={store.id}
