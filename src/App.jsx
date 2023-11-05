@@ -19,9 +19,9 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/store/create" element={<StoreCreate />} />
-          <Route path="/store/:storeId" element={<StoreFront />} />
-          <Route path="/store/:storeId/add" element={<AddGames />} />
+          <Route path="/stores/create" element={<StoreCreate />} />
+          <Route path="/stores/:storeId" element={<StoreFront />} />
+          <Route path="/stores/:storeId/add" element={<AddGames />} />
           <Route path="login" element={<Login />} />
         </Routes>
       </Router>

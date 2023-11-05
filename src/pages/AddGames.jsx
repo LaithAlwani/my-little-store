@@ -1,5 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { addDoc, doc, collection, serverTimestamp, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  doc,
+  collection,
+  serverTimestamp,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
 import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { db } from "../lib/firebase";
@@ -30,22 +37,36 @@ export default function AddGames() {
     e.preventDefault();
     setLoading(true);
     boardgames.forEach((game) => {
-      addDoc(collection(db, "stores", storeId, "boardgames"), {
-        ...game,
-        createdAt: serverTimestamp(),
-      })
-        .then(() => {
-          updateDoc(
-            doc(db, "stores", storeId),
-            { updated_at: serverTimestamp(), last_updated: serverTimestamp() },
-            { merge: true }
-          ).then(() => {
-            toast.success(`${game.name} added!`);
-            navigate(`/`);
+      if (game.isWanted) {
+        updateDoc(
+          doc(db, "stores", storeId),
+          {
+            boardgamesWanted: arrayUnion(game),
+            updated_at: serverTimestamp(),
+            last_updated: serverTimestamp(),
+          },
+          { merge: true }
+        )
+          .then(() => {
+            navigate(-1);
+          })
+          .catch((err) => {
+            toast.error(err.message);
           });
+      }
+      updateDoc(
+        doc(db, "stores", storeId),
+        {
+          boardgamesSale: arrayUnion(game),
+          updated_at: serverTimestamp(),
+          last_updated: serverTimestamp(),
+        },
+        { merge: true }
+      )
+        .then(() => {
+          navigate(-1);
         })
         .catch((err) => {
-          console.log(err);
           toast.error(err.message);
         });
     });
@@ -98,70 +119,72 @@ export default function AddGames() {
       <Loader />
     </div>
   ) : (
-    <form onSubmit={getBggGameInfo} className="form-container">
-      <h3>Just paste the boardgames' bgg url and set a price</h3>
-      <label htmlFor="">
-        <input onChange={() => setIso(!iso)} type="checkbox" placeholder="bbglink" />
-        Looking for a game?
-      </label>
-      <input
-        type="text"
-        placeholder="bbglink"
-        value={bggLink}
-        onChange={(e) => setBggLink(e.target.value)}
-      />
-      {!iso && (
-        <>
-          <input
-            type="number"
-            placeholder="price"
-            value={price}
-            onChange={(e) => setPrice(parseInt(e.target.value))}
-            required
-          />
-          <select onChange={(e) => setCondition(e.target.value)}>
-            <option value="like-new">Like new</option>
-            <option value="used">Used</option>
-            <option value="sealed">Sealed</option>
-          </select>
-          <label htmlFor="">
+    <>
+      <form onSubmit={getBggGameInfo} className="form-container">
+        <h3>Just paste the boardgames' bgg url and set a price</h3>
+        <label htmlFor="">
+          <input onChange={() => setIso(!iso)} type="checkbox" placeholder="bbglink" />
+          Looking for a game?
+        </label>
+        <input
+          type="text"
+          placeholder="bbglink"
+          value={bggLink}
+          onChange={(e) => setBggLink(e.target.value)}
+        />
+        {!iso && (
+          <>
             <input
-              onChange={() => setBoxDamage(!boxDamage)}
-              type="checkbox"
-              placeholder="bbglink"
+              type="number"
+              placeholder="price"
+              value={price}
+              onChange={(e) => setPrice(parseInt(e.target.value))}
+              required
             />
-            Box damage(dents)
-          </label>
-          <label htmlFor="">
-            <input
-              onChange={() => setGameDamage(!gameDamage)}
-              type="checkbox"
-              placeholder="bbglink"
-            />
-            Content damage
-          </label>
-          <label htmlFor="">
-            <input
-              onChange={() => setMissingPieces(!missingPieces)}
-              type="checkbox"
-              placeholder="bbglink"
-            />
-            missing pieces
-          </label>
-        </>
-      )}
+            <select onChange={(e) => setCondition(e.target.value)}>
+              <option value="like-new">Like new</option>
+              <option value="used">Used</option>
+              <option value="sealed">Sealed</option>
+            </select>
+            <label htmlFor="">
+              <input
+                onChange={() => setBoxDamage(!boxDamage)}
+                type="checkbox"
+                placeholder="bbglink"
+              />
+              Box damage(dents)
+            </label>
+            <label htmlFor="">
+              <input
+                onChange={() => setGameDamage(!gameDamage)}
+                type="checkbox"
+                placeholder="bbglink"
+              />
+              Content damage
+            </label>
+            <label htmlFor="">
+              <input
+                onChange={() => setMissingPieces(!missingPieces)}
+                type="checkbox"
+                placeholder="bbglink"
+              />
+              missing pieces
+            </label>
+          </>
+        )}
+        <button>AddGame</button>
+      </form>
 
-      <button>AddGame</button>
-      <div className="gamelist">
+      <div className="container gamelist">
         {boardgames.map((game, i) => (
           <Boardgame key={i} game={game} />
         ))}
+        {boardgames.length > 0 && (
+          <button onClick={handleSubmit} disabled={loading} className="btn-sm">
+            {loading ? <Loader /> : "Sumbit Games"}
+          </button>
+        )}
       </div>
-      {boardgames.length > 0 && (
-        <button onClick={handleSubmit} disabled={loading}>
-          {loading ? <Loader /> : "Sumbit Games"}
-        </button>
-      )}
-    </form>
+    </>
   );
 }

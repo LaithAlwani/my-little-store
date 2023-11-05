@@ -1,11 +1,14 @@
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../lib/firebase";
-import { addDoc, doc, getDoc, collection, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, addDoc, collection } from "firebase/firestore";
+import { useContext } from "react";
+import { UserContext } from "../lib/context";
 
 export default function Login() {
   const navigate = useNavigate();
+  const {user} =useContext(UserContext)
 
   const loginWithProvider = async (provider) => {
     try {
@@ -25,15 +28,23 @@ export default function Login() {
               updated_at: null,
               last_updated: serverTimestamp(),
             })
-              .then(() => {
-                toast.success("Store Created");
-                navigate(`stores/${storeRef.id}`);
+              .then((docRef) => {
+                toast.success("Store has been Created please login again");
+                signOut(auth)
+                  .then(() => {
+                    // toast.success("Logged out");
+                    navigate("/login");
+                  })
+                  .catch((err) => {
+                    toast.error(err.message);
+                  });
               })
               .catch((err) => toast.error(err.message));
+          } else {
+            navigate("/");
           }
         })
         .catch((err) => console.log(err));
-      navigate(`/`);
     } catch (error) {
       // Handle Errors here.
       const errorCode = error.code;
@@ -50,9 +61,14 @@ export default function Login() {
     loginWithProvider(new GoogleAuthProvider());
   };
 
+  if (user) {
+    navigate(-1);
+  }
+
   return (
     <div className="container">
       <button onClick={logInWithGoogle}>Login with Google</button>
+      <h2>Only The first time you login, your store will be created and you will be logged out</h2>
     </div>
   );
 }

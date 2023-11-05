@@ -1,13 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  updateDoc,
+  doc,
+  increment,
+} from "firebase/firestore";
 import Loader from "../components/Loader";
 import { db } from "../lib/firebase";
 import { Link } from "react-router-dom";
 import * as dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import toast from "react-hot-toast";
+import { MdRemoveRedEye } from "react-icons/md";
+import { UserContext } from "../lib/context";
 dayjs.extend(relativeTime);
 
 const HomePage = () => {
+  const { user, userStoreId } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [stores, setStores] = useState([]);
 
@@ -24,18 +36,40 @@ const HomePage = () => {
       setLoading(false);
     });
   };
+
+  const handleClick = (storeId) => {
+    if (userStoreId != storeId)
+      updateDoc(doc(db, "stores", storeId), { views: increment(1) }, { merge: true }).catch((err) =>
+        toast.error(err.message)
+      );
+  };
+
   useEffect(() => {
     if (stores.length != 0) return;
     getStores();
   }, []);
+
   return loading ? (
     <Loader />
   ) : (
     <section className="container flex">
       {stores.length > 0 ? (
         stores.map((store) => (
-          <Link to={`store/${store.id}`} key={store.id} className="bg-container">
+          <Link
+            to={`stores/${store.id}`}
+            key={store.id}
+            className={`store-container ${(!store.boardgamesSale && !store.boardgameWanted )?"disabled-link":""}`}
+            onClick={() => handleClick(store.id)}>
+            <img src={store.avatar} alt=""  className="store-avatar"/>
+            <div className="store-img-container">
+              {store.boardgamesSale? store.boardgamesSale?.sort((a,b)=> a.name > b.name ? 1:-1).map((game) => (
+                <img src={game.thumbnail} />
+              )):<h2>This store is Empty</h2>}
+            </div>
             <h1>{store.name}</h1>
+            <span>
+              <MdRemoveRedEye /> {store.views}
+            </span>
             <span>
               {store["updated_at"]
                 ? "update " + dayjs(store["updated_at"]?.toDate()).fromNow()

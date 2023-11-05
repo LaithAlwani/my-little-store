@@ -1,4 +1,4 @@
-import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { db } from "../lib/firebase";
@@ -25,7 +25,7 @@ export default function Boardgame({ game }) {
     description,
   } = game;
   const { storeId } = useParams();
-  const { user, isAdmin } = useContext(UserContext);
+  const { user, userStoreId } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
@@ -34,20 +34,38 @@ export default function Boardgame({ game }) {
     setIsOpen(!isOpen);
   };
 
-  const updateBoardgame = async (e, id, field) => {
-    const boardgameRef = doc(db, "stores", storeId, "boardgames", id);
+  const updateBoardgame = async (e, game, field) => {
     const newValue = e.target.value;
+    const updateGame = { ...game, [field]: newValue };
     try {
-      await updateDoc(boardgameRef, { [field]: newValue }, { merge: true });
-      await updateDoc(doc(db, "stores", storeId), {
-        last_updated: serverTimestamp(),
-        updated_at: serverTimestamp(),
-      });
+      if (game.isWanted) {
+        await updateDoc(doc(db, "stores", storeId), {
+          boardgamesWanted: arrayRemove(game),
+        });
+        await updateDoc(doc(db, "stores", storeId), {
+          boardgamesWanted: arrayUnion(updateGame),
+          last_updated: serverTimestamp(),
+          updated_at: serverTimestamp(),
+        });
+      } else {
+        await updateDoc(doc(db, "stores", storeId), {
+          boardgamesSale: arrayRemove(game),
+        });
+        await updateDoc(doc(db, "stores", storeId), {
+          boardgames: arrayUnion(updateGame),
+          last_updated: serverTimestamp(),
+          updated_at: serverTimestamp(),
+        });
+      }
       toast.success(`${name} update ${field} to ${newValue}`);
       setIsOpen(!isOpen);
     } catch (err) {
       toast.error(err.message);
     }
+  };
+
+  const isStoreOwner = () => {
+    return userStoreId === storeId;
   };
 
   return (
@@ -71,9 +89,9 @@ export default function Boardgame({ game }) {
         <div onClick={toggleModle}>
           <Ribbon status={status} isWanted={isWanted} price={price} />
         </div>
-        {user && isAdmin && isOpen && (
+        {user && isStoreOwner() && isOpen && (
           <div className="model">
-            <select name="" id="" onChange={(e) => updateBoardgame(e, game.id, "status")}>
+            <select name="" id="" onChange={(e) => updateBoardgame(e, game, "status")}>
               <option value="">Choose Status</option>
               {game.status !== "available" && <option value="available">avialable</option>}
               {game.status !== "pending" && <option value="pending">pending</option>}
@@ -83,9 +101,9 @@ export default function Boardgame({ game }) {
               type="number"
               placeholder="price"
               defaultValue={price}
-              onBlur={(e) => updateBoardgame(e, game.id, "price")}
+              onBlur={(e) => updateBoardgame(e, game, "price")}
             />
-            {(status === "sold" || isWanted) && <RemoveBoardgame id={game.id} name={game.name} />}
+            {(status === "sold" || isWanted) && <RemoveBoardgame game={game} />}
           </div>
         )}
       </div>

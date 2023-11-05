@@ -12,7 +12,7 @@ exports.newUserOnSignup = functions
       .collection("users")
       .doc(user.uid)
       .set({
-        uid:user.uid,
+        uid: user.uid,
         email: user.email,
         avatar: user.photoURL,
         displayName: user.displayName,
@@ -20,23 +20,7 @@ exports.newUserOnSignup = functions
         updated_at: admin.firestore.Timestamp.now(),
         lastlogin: admin.firestore.Timestamp.now(),
       })
-      .then(() => {
-        admin
-          .firestore()
-          .collection("stores")
-          .doc()
-          .set({
-            name: user.displayName.replace(" ", "").toLowerCase(),
-            email:user.email,
-            avatar:user.photoURL,
-            views: 0,
-            numGames: 0,
-            created_at: admin.firestore.Timestamp.now(),
-            updated_at: null,
-            last_updated:admin.firestore.Timestamp.now()
-          });
-      });
-    return user;
+      return user;
   });
 
 exports.addAdmin = functions.runWith({ enforceAppCheck: false }).https.onCall((data, context) => {

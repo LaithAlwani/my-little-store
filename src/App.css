@@ -50,6 +50,13 @@ button {
   line-height: 1.5rem;
 }
 
+.btn-sm {
+  max-width: 600px;
+  margin-inline: 1rem;
+  box-sizing: border-box;
+  min-width: 10rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -76,15 +83,20 @@ button {
   margin-left: auto;
   align-items: center;
   justify-content: center;
+  gap:0.5rem
 }
 .navLink {
   padding-inline: 0.5rem;
+}
+.disabled-link {
+  pointer-events: none;
 }
 .container {
   max-width: 68rem;
   height: 100%;
   margin-inline: auto;
   margin-block-end: 2rem;
+  padding: 0.5rem;
   text-align: center;
 }
 
@@ -96,7 +108,6 @@ button {
   gap: 1rem;
   height: 100%;
 }
-
 
 .search-bar-container {
   width: 20rem;
@@ -129,7 +140,6 @@ button {
   border-bottom: 1px solid #666;
 }
 
-
 .gamelist {
   display: flex;
   flex-wrap: wrap;
@@ -150,6 +160,48 @@ button {
 .muted {
   font-size: 0.8rem;
   color: rgb(95, 95, 95);
+}
+
+.store-container {
+  position: relative;
+  width: 100%;
+  max-width: 28rem;
+  padding: 1rem 0.5rem 0.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background: rgba(214, 214, 214, 0.762);
+  border: 1px solid rgb(150, 150, 150);
+  border-radius: 0.5rem;
+  box-shadow: 2px 2px 20px #9f9f9f;
+}
+
+.store-container .store-avatar{
+  margin-right: auto;
+  border-radius:50% ;
+  width: 32px;
+  height: 32px;
+  margin-block-end: 1rem;
+}
+
+
+.store-container .store-img-container {
+  max-width: 600px;
+  height: 300px;
+  overflow: scroll;
+}
+.store-container .store-img-container img{
+  display: inline-block;
+  width: 100px;
+}
+.store-container span {
+  font-size: 0.8rem;
+  margin-left: auto;
+  color: gray;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .bg-container {
