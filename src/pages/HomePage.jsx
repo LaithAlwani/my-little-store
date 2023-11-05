@@ -70,7 +70,7 @@ const HomePage = () => {
                 <h2>This store is Empty</h2>
               )}
             </div>
-            <h1>{store.name}</h1>
+            <h1>{store.name}'s Store</h1>
             <span>
               <MdRemoveRedEye /> {store.views}
             </span>
