@@ -51,7 +51,7 @@ export default function Navbar() {
           </Link>
         </div>
       ) : (
-        <Link to="login" className="navLink" style={{marginLeft:"auto"}}>
+        <Link to="login" className="navLink" style={{ marginLeft: "auto" }}>
           <MdLogin size={32} />
         </Link>
       )}
@@ -62,16 +62,14 @@ export default function Navbar() {
           ) : (
             <FaUserCircle size={32} />
           )}
-          {isOpen && (
-            <div className="mobile-menu">
-              <Link to={`/stores/${userStoreId}`}>
-                <MdStore size={32} /> My Store
-              </Link>
-              <Link to="/" onClick={logout} className="navLink">
-                <MdLogout size={32} /> Logout
-              </Link>
-            </div>
-          )}
+          <div className={`mobile-menu ${isOpen ? "open-menu" : ""}`}>
+            <Link to={`/stores/${userStoreId}`}>
+              <MdStore size={32} /> My Store
+            </Link>
+            <Link to="/" onClick={logout} className="navLink">
+              <MdLogout size={32} /> Logout
+            </Link>
+          </div>
         </div>
       )}
     </nav>

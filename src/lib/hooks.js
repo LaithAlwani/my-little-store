@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { auth, db } from "../lib/firebase";
 import { getIdTokenResult, onAuthStateChanged } from "firebase/auth";
-import { DocumentSnapshot, collection, getDocs, query, where } from "firebase/firestore";
+import { doc, getDoc, onSnapshot} from "firebase/firestore";
 
 export const useUserData = () => {
   const [user, setUser] = useState(null);
@@ -22,13 +22,9 @@ export const useUserData = () => {
             setUser(user);
             setUserAvatar(user?.photoURL);
             setLoading(false);
-            getDocs(query(collection(db, "stores"), where("ownerId", "==", user.uid))).then(
-              (querySnapshot) => {
-                querySnapshot.forEach((docSnapshot) => {
-                  setUserStoreId(docSnapshot.id);
-                });
-              }
-            );
+            onSnapshot(doc(db, "users", user.uid),(docRef) => {
+              setUserStoreId(docRef.data().storeId);
+            });
           })
           .catch((err) => {
             return err.message;
@@ -39,6 +35,6 @@ export const useUserData = () => {
         setLoading(false);
       }
     });
-  }, [user]);
+  }, [user, userStoreId]);
   return { user, userAvatar, isAdmin, isLoading, userStoreId };
 };

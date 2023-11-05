@@ -52,7 +52,7 @@ export default function Boardgame({ game }) {
           boardgamesSale: arrayRemove(game),
         });
         await updateDoc(doc(db, "stores", storeId), {
-          boardgames: arrayUnion(updateGame),
+          boardgamesSale: arrayUnion(updateGame),
           last_updated: serverTimestamp(),
           updated_at: serverTimestamp(),
         });

@@ -1,14 +1,11 @@
-import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../lib/firebase";
-import { doc, getDoc, serverTimestamp, addDoc, collection } from "firebase/firestore";
-import { useContext } from "react";
-import { UserContext } from "../lib/context";
+import { doc, getDoc, serverTimestamp, addDoc, collection, setDoc } from "firebase/firestore";
 
 export default function Login() {
   const navigate = useNavigate();
-  const {user} =useContext(UserContext)
 
   const loginWithProvider = async (provider) => {
     try {
@@ -17,6 +14,7 @@ export default function Login() {
       getDoc(doc(db, "users", user.uid))
         .then((docRef) => {
           if (!docRef.exists()) {
+            console.log("creating store");
             addDoc(collection(db, "stores"), {
               ownerId: user.uid,
               name: user.displayName.replace(" ", "").toLowerCase(),
@@ -28,20 +26,26 @@ export default function Login() {
               updated_at: null,
               last_updated: serverTimestamp(),
             })
-              .then((docRef) => {
-                toast.success("Store has been Created please login again");
-                signOut(auth)
+              .then((storeRef) => {
+                setDoc(doc(db, "users", user.uid), {
+                  storeId: storeRef.id,
+                  uid: user.uid,
+                  email: user.email,
+                  avatar: user.photoURL,
+                  displayName: user.displayName,
+                  created_at: serverTimestamp(),
+                  updated_at: serverTimestamp(),
+                  lastlogin: serverTimestamp(),
+                })
                   .then(() => {
-                    // toast.success("Logged out");
-                    navigate("/login");
+                    toast.success("Profile & Store Successfully created");
+                    navigate(`/stores/${storeRef.id}`);
                   })
-                  .catch((err) => {
-                    toast.error(err.message);
-                  });
+                  .catch((err) => toast.error(err.message));
               })
               .catch((err) => toast.error(err.message));
           } else {
-            navigate("/");
+            navigate(`/`);
           }
         })
         .catch((err) => console.log(err));
@@ -60,10 +64,6 @@ export default function Login() {
   const logInWithGoogle = async () => {
     loginWithProvider(new GoogleAuthProvider());
   };
-
-  if (user) {
-    navigate(-1);
-  }
 
   return (
     <div className="container">

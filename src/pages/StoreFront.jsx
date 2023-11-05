@@ -51,13 +51,13 @@ export default function StoreFront() {
     return unSubscribe;
   }, []);
 
-  useEffect(() => {
-    getDocs(query(collection(db, "boardgames"))).then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        setTempgames((prev) => [...prev, doc.data()]);
-      });
-    });
-  });
+  // useEffect(() => {
+  //   getDocs(query(collection(db, "boardgames"))).then((querySnapshot) => {
+  //     querySnapshot.forEach((doc) => {
+  //       setTempgames((prev) => [...prev, doc.data()]);
+  //     });
+  //   });
+  // },[]);
 
   // const copy = () => {
   //   tempgames.forEach((game) => {
@@ -73,6 +73,7 @@ export default function StoreFront() {
     return (
       <div className="container">
         <h1>This Store has no games yet</h1>
+        {/* <button onClick={copy}>copy games</button> */}
         {isStoreOwner() && (
           <Link to="add" className="navLink">
             <MdPostAdd size={32} />
