@@ -53,22 +53,23 @@ export default function AddGames() {
           .catch((err) => {
             toast.error(err.message);
           });
+      } else {
+        updateDoc(
+          doc(db, "stores", storeId),
+          {
+            boardgamesSale: arrayUnion(game),
+            updated_at: serverTimestamp(),
+            last_updated: serverTimestamp(),
+          },
+          { merge: true }
+        )
+          .then(() => {
+            navigate(-1);
+          })
+          .catch((err) => {
+            toast.error(err.message);
+          });
       }
-      updateDoc(
-        doc(db, "stores", storeId),
-        {
-          boardgamesSale: arrayUnion(game),
-          updated_at: serverTimestamp(),
-          last_updated: serverTimestamp(),
-        },
-        { merge: true }
-      )
-        .then(() => {
-          navigate(-1);
-        })
-        .catch((err) => {
-          toast.error(err.message);
-        });
     });
     setBoardgames([]);
   };

@@ -51,42 +51,9 @@ export default function StoreFront() {
     return unSubscribe;
   }, []);
 
-  // useEffect(() => {
-  //   getDocs(query(collection(db, "boardgames"))).then((querySnapshot) => {
-  //     querySnapshot.forEach((doc) => {
-  //       setTempgames((prev) => [...prev, doc.data()]);
-  //     });
-  //   });
-  // },[]);
-
-  // const copy = () => {
-  //   tempgames.forEach((game) => {
-  //     if (game.isWanted) {
-  //       updateDoc(doc(db, "stores",storeId), { boardgamesWanted: arrayUnion(game) }).then(()=>toast.success(game.name + " has been copied"));
-  //     } else {
-  //       updateDoc(doc(db, "stores", storeId), { boardgamesSale: arrayUnion(game) }).then(()=>toast.success(game.name + " has been copied"));
-  //     }
-
-  //   });
-  // };
-  if (!store?.boardgamesSale && !store?.boardgamesWanted) {
-    return (
-      <div className="container">
-        <h1>This Store has no games yet</h1>
-        {/* <button onClick={copy}>copy games</button> */}
-        {isStoreOwner() && (
-          <Link to="add" className="navLink">
-            <MdPostAdd size={32} />
-          </Link>
-        )}
-      </div>
-    );
-  }
-
   return !loading ? (
     store ? (
       <div className="container">
-        {/* <button onClick={copy}>copy games</button> */}
         <div className="search-bar-container">
           {isStoreOwner() && (
             <Link to="add" className="navLink">
@@ -132,7 +99,7 @@ export default function StoreFront() {
                   }
                   return game.name.includes(search);
                 })
-                .sort((a, b) => (a.name < b.name ? 1 : -1))
+                .sort((a, b) => (a.name > b.name ? 1 : -1))
                 .map((game) => (
                   <Boardgame key={game.bggId} game={game} />
                 ))}
@@ -141,19 +108,6 @@ export default function StoreFront() {
             <h1>Not Looking for Trades</h1>
           )}
         </div>
-        {/* <div className="container">
-        {wantedBoardgames?.length > 0 ? (
-          <div className="gamelist">
-            {wantedBoardgames
-              .filter((game) => (search === "" ? game : game.name.includes(search)))
-              .map((game) => (
-                <Boardgame key={game.bggId} game={game} />
-              ))}
-          </div>
-        ) : (
-          <h1>Not looking to Trade</h1>
-        )}
-      </div> */}
       </div>
     ) : (
       <h1>Store Does Not Exist</h1>
