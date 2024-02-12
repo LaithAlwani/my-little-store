@@ -38,7 +38,7 @@ export default function Navbar() {
 
       {user ? (
         <div className="links">
-          <Link to={`/stores/${userStoreId}`}>
+          <Link to={`/add-username`}>
             <MdStore size={32} />
           </Link>
           {user?.photoURL ? (
@@ -63,7 +63,7 @@ export default function Navbar() {
             <FaUserCircle size={32} />
           )}
           <div className={`mobile-menu ${isOpen ? "open-menu" : ""}`}>
-            <Link to={`/stores/${userStoreId}`}>
+            <Link to={`/add-username`}>
               <MdStore size={32} /> My Store
             </Link>
             <Link to="/" onClick={logout} className="navLink">

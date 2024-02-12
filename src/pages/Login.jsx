@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../lib/firebase";
 import { doc, getDoc, serverTimestamp, addDoc, collection, setDoc } from "firebase/firestore";
-import {FcGoogle} from "react-icons/fc"
+import { FcGoogle } from "react-icons/fc";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -16,35 +16,19 @@ export default function Login() {
         .then((docRef) => {
           if (!docRef.exists()) {
             console.log("creating store");
-            addDoc(collection(db, "stores"), {
-              ownerId: user.uid,
-              name: user.displayName.replace(" ", "").toLowerCase(),
+            setDoc(doc(db, "users", user.uid), {
               email: user.email,
               avatar: user.photoURL,
-              views: 0,
-              numGames: 0,
+              displayName: user.displayName,
               created_at: serverTimestamp(),
-              updated_at: null,
-              last_updated: serverTimestamp(),
+              updated_at: serverTimestamp(),
+              lastlogin: serverTimestamp(),
             })
-              .then((storeRef) => {
-                setDoc(doc(db, "users", user.uid), {
-                  storeId: storeRef.id,
-                  uid: user.uid,
-                  email: user.email,
-                  avatar: user.photoURL,
-                  displayName: user.displayName,
-                  created_at: serverTimestamp(),
-                  updated_at: serverTimestamp(),
-                  lastlogin: serverTimestamp(),
-                })
-                  .then(() => {
-                    toast.success("Profile & Store Successfully created");
-                    navigate(`/stores/${storeRef.id}`);
-                  })
-                  .catch((err) => toast.error(err.message));
-              })
-              .catch((err) => toast.error(err.message));
+            .then(() => {
+              toast.success("Profile Successfully created");
+              navigate(`/add-username`);
+            })
+            .catch((err) => toast.error(err.message));
           } else {
             navigate(`/`);
           }
@@ -68,7 +52,9 @@ export default function Login() {
 
   return (
     <div className="container">
-      <button onClick={logInWithGoogle}><FcGoogle size={24} /> Login</button>
+      <button onClick={logInWithGoogle}>
+        <FcGoogle size={24} /> Login
+      </button>
     </div>
   );
 }
