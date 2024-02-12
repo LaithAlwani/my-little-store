@@ -33,7 +33,11 @@ const HomePage = () => {
   ) : (
     <section className="container ">
       {users.length > 0 &&
-        users.map((user) => <StoreFront key={user.id} username={user.username} />)}
+        users.map((user) => (
+          <>
+            <StoreFront key={user.id} user={user} />
+          </>
+        ))}
     </section>
   );
 };
