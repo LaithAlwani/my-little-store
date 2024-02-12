@@ -15,7 +15,6 @@ export default function Login() {
       getDoc(doc(db, "users", user.uid))
         .then((docRef) => {
           if (!docRef.exists()) {
-            console.log("creating store");
             setDoc(doc(db, "users", user.uid), {
               email: user.email,
               avatar: user.photoURL,
@@ -26,7 +25,7 @@ export default function Login() {
             })
             .then(() => {
               toast.success("Profile Successfully created");
-              navigate(`/add-username`);
+              navigate(`/add-user-information`);
             })
             .catch((err) => toast.error(err.message));
           } else {

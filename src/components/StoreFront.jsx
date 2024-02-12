@@ -4,12 +4,13 @@ import Boardgame from "./Boardgame";
 import { XMLParser } from "fast-xml-parser";
 import Loader from "./Loader";
 import { FaFacebookF, FaFacebookMessenger, FaLocationDot } from "react-icons/fa6";
+import { SiBoardgamegeek } from "react-icons/si";
 
 export default function StoreFront({ user }) {
   const [boardgames, setBoardgames] = useState([]);
   const [loading, setLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState();
-  const { username, fbHandle, area, postalCode } = user;
+  const { username, fbHandle, pickupLocation, postalcode } = user;
 
   useEffect(() => {
     setLoading(true);
@@ -19,7 +20,8 @@ export default function StoreFront({ user }) {
         const parser = new XMLParser({ ignoreAttributes: false });
         const { items } = parser.parse(data);
         setLastUpdated(items["@_pubdate"]);
-        user.lastUpdated = items["@_pubdate"];
+        
+        console.log(items);
         if (items.item) {
           const tradeList = items.item.filter((game) => game.status["@_fortrade"] === "1");
           setBoardgames([]);
@@ -59,17 +61,18 @@ export default function StoreFront({ user }) {
           <FaFacebookMessenger />
           </a>
           {" "}
-        <a href={`http://google.com/maps?q=${postalCode}`} target="_blank">
+        <a href={`http://google.com/maps?q=${postalcode}`} target="_blank">
           <FaLocationDot />
-        </a>
+          </a>
+          <a href={`https://boardgamegeek.com/user/${username}`} target="_blank"><SiBoardgamegeek /></a>
       </h2>
       <div className="container gamelist">
         {boardgames.map((game, i) => (
           <Boardgame key={i} game={game} />
         ))}
       </div>
-      <span>location: {area}</span>
-      <p>last updated:{lastUpdated}</p>
+      <span>{pickupLocation}</span>
+      <p>last updated on {lastUpdated}</p>
     </>
   );
 }

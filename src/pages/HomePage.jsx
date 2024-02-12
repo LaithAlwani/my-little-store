@@ -32,12 +32,7 @@ const HomePage = () => {
     <Loader />
   ) : (
     <section className="container ">
-      {users.length > 0 &&
-        users.map((user) => (
-          <>
-            <StoreFront key={user.id} user={user} />
-          </>
-        ))}
+      {users.length > 0 && users.map((user) => <StoreFront key={user.id} user={user} />)}
     </section>
   );
 };

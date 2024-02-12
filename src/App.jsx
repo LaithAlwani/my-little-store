@@ -7,7 +7,7 @@ import { useUserData } from "./lib/hooks";
 import { UserContext } from "./lib/context";
 import "./App.css";
 import HomePage from "./pages/HomePage";
-import AddUsername from "./pages/AddUsername";
+import AddUserInformation from "./pages/AddUserInformation";
 
 function App() {
   const userData = useUserData();
@@ -18,7 +18,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/add-username" element={<AddUsername />} />
+          <Route path="/add-user-information" element={<AddUserInformation />} />
           <Route path="login" element={<Login />} />
         </Routes>
       </Router>
