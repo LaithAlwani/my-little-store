@@ -104,7 +104,6 @@ button {
   max-width: 68rem;
   height: 100%;
   margin-inline: auto;
-  margin-block-end: 2rem;
   padding: 0.5rem;
   text-align: center;
 }
@@ -149,6 +148,10 @@ button {
   border-bottom: 1px solid #666;
 }
 
+.user-collection{
+  margin-bottom: 2rem;
+}
+
 .gamelist {
   display: flex;
   flex-wrap: wrap;
@@ -169,54 +172,6 @@ button {
 .muted {
   font-size: 0.8rem;
   color: rgb(95, 95, 95);
-}
-
-.store-container {
-  position: relative;
-  width: 100%;
-  max-width: 28rem;
-  padding: 1rem 0 0.25rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  background: rgba(214, 214, 214, 0.762);
-  border: 1px solid rgb(150, 150, 150);
-  border-radius: 0.5rem;
-  box-shadow: 2px 2px 20px #9f9f9f;
-}
-
-.store-container .store-avatar{
-  margin-right: auto;
-  margin-left: 0.5rem;
-  border-radius:50% ;
-  width: 32px;
-  height: 32px;
-  margin-block-end: 1rem;
-}
-
-
-.store-container .store-img-container {
-  max-width: 600px;
-  width: 100%;
-  height: 300px;
-  overflow-y: scroll;
-  border-top: 1px solid #333;
-  border-bottom: 1px solid #333;
-  padding: 0.5rem 0;
-}
-.store-container .store-img-container img{
-  display: inline-block;
-  width: 100px;
-}
-.store-container span {
-  font-size: 0.8rem;
-  margin-left: auto;
-  padding-right: 0.5rem;
-  color: gray;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
 }
 
 .bg-container {
@@ -246,99 +201,6 @@ button {
   max-width: 100%;
   height: 12rem;
   object-fit: contain;
-}
-
-.ribbon-banner {
-  /* adjust the below to control the shape */
-  --d: 10px;
-  --g: 16px;
-  --c: #666;
-  /**/
-
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: translate(-29.29%, -100%) rotate(-45deg); /* 29.29% = 100%*(1 - cos(45deg)) */
-  color: #fff;
-  text-align: center;
-  width: 100px;
-  transform-origin: bottom right;
-  padding: 5px 0 calc(var(--d) + 05px);
-  background: linear-gradient(135deg, transparent var(--g), var(--c) calc(var(--g) - 0.3px)) left,
-    linear-gradient(-135deg, transparent var(--g), var(--c) calc(var(--g) - 0.3px)) right;
-  background-size: 51% 100%;
-  background-repeat: no-repeat;
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 100%,
-    calc(100% - var(--d)) calc(100% - var(--d)),
-    var(--d) calc(100% - var(--d)),
-    0 100%
-  );
-  cursor: pointer;
-  z-index: 1;
-}
-
-.bg-info {
-  position: absolute;
-  bottom: 0.25rem;
-  right: 0.25rem;
-  cursor: pointer;
-  z-index: 1;
-}
-
-.tags {
-  width: 100%;
-  height: 11rem;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  color: white;
-}
-
-.tag {
-  padding: 0.25rem;
-  border-radius: 0.25rem;
-  text-shadow: 1px 1px #666;
-  font-weight: bold;
-}
-
-.model {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-height: 100%;
-  width: 100%;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  background-color: rgba(49, 49, 49, 0.5);
-}
-
-.green {
-  --c: green;
-}
-
-.red {
-  --c: red;
-}
-
-.yellow {
-  --c: rgb(248, 178, 49);
-}
-
-.add-game-icon {
-  position: fixed;
-  display: flex;
-  flex-direction: row-reverse;
-  gap: 1rem;
-  top: 6rem;
-  right: 3rem;
 }
 
 .loader-container {
